@@ -10,11 +10,21 @@ import UIKit
 final class FeedViewController: UIViewController {
     
     private let post: Post
-    private lazy var showPostButton: CustomButton = {
-        $0.translatesAutoresizingMaskIntoConstraints = false
+    private lazy var showPostFirstButton: CustomButton = {
         $0.addTarget(self, action: #selector(showPostButtonTapped), for: .touchUpInside)
         return $0
-    }(CustomButton(title: "Show post"))
+    }(CustomButton(title: "Show post1").withConstraints())
+    
+    private lazy var showPostSecondButton: CustomButton = {
+        $0.addTarget(self, action: #selector(showPostButtonTapped), for: .touchUpInside)
+        return $0
+    }(CustomButton(title: "Show post2").withConstraints())
+    
+    private lazy var postButtonsStackView: UIStackView = {
+        $0.axis = .vertical
+        $0.spacing = 10
+        return $0
+    }(UIStackView().withConstraints())
     
     init(post: Post) {
         self.post = post
@@ -33,18 +43,20 @@ final class FeedViewController: UIViewController {
     
     private func setUpViews() {
         view.backgroundColor = .systemBackground
-        view.addSubview(showPostButton)
+        view.addSubview(postButtonsStackView)
+        [
+            showPostFirstButton, showPostSecondButton
+        ].forEach { postButtonsStackView.addArrangedSubview($0) }
     }
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            showPostButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            showPostButton.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            postButtonsStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            postButtonsStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
-    @objc
-    private func showPostButtonTapped() {
+    @objc private func showPostButtonTapped() {
         let postVC = PostViewController(post: post)
         postVC.modalPresentationStyle = .fullScreen
         postVC.modalTransitionStyle = .coverVertical

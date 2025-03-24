@@ -14,6 +14,7 @@ final class ProfileHeaderView: UIView {
     private lazy var profileImageView: UIImageView = {
         $0.image = UIImage(named: .profileImage)
         $0.contentMode = .scaleAspectFill
+        $0.layer.cornerRadius = 40
         $0.clipsToBounds = true
         $0.layer.borderWidth = 3
         $0.layer.borderColor = UIColor.white.cgColor
@@ -47,7 +48,6 @@ final class ProfileHeaderView: UIView {
    }(UITextField().withConstraints())
     
     private lazy var setStatusButton: UIButton = {
-        $0.translatesAutoresizingMaskIntoConstraints = false
         $0.setTitleColor(.white, for: .normal)
         $0.setTitle(.setStatusTitle, for: .normal)
         $0.layer.cornerRadius = 12
@@ -58,8 +58,8 @@ final class ProfileHeaderView: UIView {
         $0.layer.shadowOpacity = 0.7
         $0.addTarget(self, action: #selector(setStatusButtonTapped), for: .touchUpInside)
         return $0
-    }(UIButton(type: .system))
-    
+    }(UIButton(type: .system).withConstraints())
+
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -68,11 +68,6 @@ final class ProfileHeaderView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        profileImageView.layer.cornerRadius = profileImageView.bounds.width / 2
     }
     
     private func setupViews() {
@@ -87,7 +82,7 @@ final class ProfileHeaderView: UIView {
         NSLayoutConstraint.activate([
             profileImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
             profileImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            profileImageView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.16),
+            profileImageView.heightAnchor.constraint(equalToConstant: 80),
             profileImageView.widthAnchor.constraint(equalTo: profileImageView.heightAnchor)
         ])
         
