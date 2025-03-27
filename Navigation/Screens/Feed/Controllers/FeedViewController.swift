@@ -11,20 +11,23 @@ final class FeedViewController: UIViewController {
     
     private let post: Post
     private lazy var showPostFirstButton: CustomButton = {
-        $0.addTarget(self, action: #selector(showPostButtonTapped), for: .touchUpInside)
-        return $0
-    }(CustomButton(title: "Show post1").withConstraints())
+        let button = CustomButton(title: "Show post1")
+        button.addTarget(self, action: #selector(showPostButtonTapped), for: .touchUpInside)
+        return button.withConstraints()
+    }()
     
     private lazy var showPostSecondButton: CustomButton = {
-        $0.addTarget(self, action: #selector(showPostButtonTapped), for: .touchUpInside)
-        return $0
-    }(CustomButton(title: "Show post2").withConstraints())
+        let button = CustomButton(title: "Show post2")
+        button.addTarget(self, action: #selector(showPostButtonTapped), for: .touchUpInside)
+        return button.withConstraints()
+    }()
     
     private lazy var postButtonsStackView: UIStackView = {
-        $0.axis = .vertical
-        $0.spacing = 10
-        return $0
-    }(UIStackView().withConstraints())
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 10
+        return stackView.withConstraints()
+    }()
     
     init(post: Post) {
         self.post = post

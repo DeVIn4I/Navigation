@@ -86,8 +86,7 @@ final class ProfileHeaderView: UIView {
             profileImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
             profileImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             profileImageView.heightAnchor.constraint(equalToConstant: 80),
-            profileImageView.widthAnchor.constraint(equalTo: profileImageView.heightAnchor)
-        ])
+            profileImageView.widthAnchor.constraint(equalTo: profileImageView.heightAnchor),
         
             profileTitleLabel.topAnchor.constraint(equalTo: profileImageView.topAnchor, constant: 12),
             profileTitleLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 22),

@@ -9,12 +9,6 @@ import UIKit
 
 final class InfoViewController: UIViewController {
     
-//    private lazy var showAlertButton: CustomButton = {
-//        $0.addTarget(self, action: #selector(showAlertButtonTapped), for: .touchUpInside)
-//        $0.translatesAutoresizingMaskIntoConstraints = false
-//        return $0
-//    }(CustomButton(title: "Show alert"))
-    
     private lazy var showAlertButton: CustomButton = {
         let button = CustomButton(title: "Show alert")
         button.addTarget(self, action: #selector(showAlertButtonTapped), for: .touchUpInside)
