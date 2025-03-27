@@ -10,10 +10,23 @@ import UIKit
 final class FeedViewController: UIViewController {
     
     private let post: Post
-    private lazy var showPostButton: CustomButton = {
-        let button = CustomButton(title: "Show post")
+    private lazy var showPostFirstButton: CustomButton = {
+        let button = CustomButton(title: "Show post1")
         button.addTarget(self, action: #selector(showPostButtonTapped), for: .touchUpInside)
         return button.withConstraints()
+    }()
+    
+    private lazy var showPostSecondButton: CustomButton = {
+        let button = CustomButton(title: "Show post2")
+        button.addTarget(self, action: #selector(showPostButtonTapped), for: .touchUpInside)
+        return button.withConstraints()
+    }()
+    
+    private lazy var postButtonsStackView: UIStackView = {
+        let stackView = UIStackView()
+        stackView.axis = .vertical
+        stackView.spacing = 10
+        return stackView.withConstraints()
     }()
     
     init(post: Post) {
@@ -33,18 +46,20 @@ final class FeedViewController: UIViewController {
     
     private func setUpViews() {
         view.backgroundColor = .systemBackground
-        view.addSubview(showPostButton)
+        view.addSubview(postButtonsStackView)
+        [
+            showPostFirstButton, showPostSecondButton
+        ].forEach { postButtonsStackView.addArrangedSubview($0) }
     }
     
     private func setConstraints() {
         NSLayoutConstraint.activate([
-            showPostButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            showPostButton.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            postButtonsStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            postButtonsStackView.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
     }
     
-    @objc
-    private func showPostButtonTapped() {
+    @objc private func showPostButtonTapped() {
         let postVC = PostViewController(post: post)
         postVC.modalPresentationStyle = .fullScreen
         postVC.modalTransitionStyle = .coverVertical

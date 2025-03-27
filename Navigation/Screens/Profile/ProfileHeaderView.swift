@@ -73,11 +73,6 @@ final class ProfileHeaderView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        profileImageView.layer.cornerRadius = profileImageView.bounds.width / 2
-    }
-    
     private func setupViews() {
         addSubview(profileImageView)
         addSubview(profileTitleLabel)
@@ -90,7 +85,7 @@ final class ProfileHeaderView: UIView {
         NSLayoutConstraint.activate([
             profileImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
             profileImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            profileImageView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.16),
+            profileImageView.heightAnchor.constraint(equalToConstant: 80),
             profileImageView.widthAnchor.constraint(equalTo: profileImageView.heightAnchor),
         
             profileTitleLabel.topAnchor.constraint(equalTo: profileImageView.topAnchor, constant: 12),
