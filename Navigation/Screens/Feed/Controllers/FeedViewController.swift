@@ -11,10 +11,10 @@ final class FeedViewController: UIViewController {
     
     private let post: Post
     private lazy var showPostButton: CustomButton = {
-        $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.addTarget(self, action: #selector(showPostButtonTapped), for: .touchUpInside)
-        return $0
-    }(CustomButton(title: "Show post"))
+        let button = CustomButton(title: "Show post")
+        button.addTarget(self, action: #selector(showPostButtonTapped), for: .touchUpInside)
+        return button.withConstraints()
+    }()
     
     init(post: Post) {
         self.post = post
