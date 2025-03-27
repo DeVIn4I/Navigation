@@ -27,8 +27,8 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             selectedImage: nil
         )
         
-        let profileVC = ProfileViewController()
-        profileVC.tabBarItem = UITabBarItem(
+        let logInVC = LogInViewController()
+        logInVC.tabBarItem = UITabBarItem(
             title: "Профиль",
             image: UIImage(systemName: "person.crop.circle"),
             selectedImage: nil
@@ -37,7 +37,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let tabbarController = UITabBarController()
         tabbarController.viewControllers = [
             feedVC,
-            profileVC
+            logInVC
         ].map { UINavigationController(rootViewController: $0) }
         
         window.rootViewController = tabbarController
