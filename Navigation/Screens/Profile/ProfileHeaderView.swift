@@ -12,13 +12,14 @@ final class ProfileHeaderView: UIView {
     private var statusText: String?
     
     private lazy var profileImageView: UIImageView = {
-        $0.image = UIImage(named: .profileImage)
-        $0.contentMode = .scaleAspectFill
-        $0.clipsToBounds = true
-        $0.layer.borderWidth = 3
-        $0.layer.borderColor = UIColor.white.cgColor
-        return $0
-    }(UIImageView().withConstraints())
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: .profileImage)
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.borderWidth = 3
+        imageView.layer.borderColor = UIColor.white.cgColor
+        return imageView.withConstraints()
+    }()
     
     private lazy var profileTitleLabel = UILabel(
         text: .profileTitle,
@@ -34,31 +35,33 @@ final class ProfileHeaderView: UIView {
     ).withConstraints()
     
    private lazy var statusTextField: UITextField = {
-       $0.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 8, height: 0))
-       $0.leftViewMode = .always
-       $0.font = .systemFont(ofSize: 15, weight: .regular)
-       $0.textColor = .black
-       $0.layer.cornerRadius = 12
-       $0.layer.borderWidth = 1
-       $0.layer.borderColor = UIColor.black.cgColor
-       $0.backgroundColor = .white
-       $0.addTarget(self, action: #selector(statusTextChanged), for: .editingChanged)
-       return $0
-   }(UITextField().withConstraints())
+       let textFiled = UITextField()
+       textFiled.placeholder = "Write something"
+       textFiled.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 8, height: 0))
+       textFiled.leftViewMode = .always
+       textFiled.font = .systemFont(ofSize: 15, weight: .regular)
+       textFiled.textColor = .black
+       textFiled.layer.cornerRadius = 12
+       textFiled.layer.borderWidth = 1
+       textFiled.layer.borderColor = UIColor.black.cgColor
+       textFiled.backgroundColor = .white
+       textFiled.addTarget(self, action: #selector(statusTextChanged), for: .editingChanged)
+       return textFiled.withConstraints()
+   }()
     
     private lazy var setStatusButton: UIButton = {
-        $0.translatesAutoresizingMaskIntoConstraints = false
-        $0.setTitleColor(.white, for: .normal)
-        $0.setTitle(.setStatusTitle, for: .normal)
-        $0.layer.cornerRadius = 12
-        $0.backgroundColor = .systemBlue
-        $0.layer.shadowColor = UIColor.black.cgColor
-        $0.layer.shadowOffset = CGSize(width: 4, height: 4)
-        $0.layer.shadowRadius = 4
-        $0.layer.shadowOpacity = 0.7
-        $0.addTarget(self, action: #selector(setStatusButtonTapped), for: .touchUpInside)
-        return $0
-    }(UIButton(type: .system))
+        let button = UIButton(type: .system)
+        button.setTitleColor(.white, for: .normal)
+        button.setTitle(.setStatusTitle, for: .normal)
+        button.layer.cornerRadius = 12
+        button.backgroundColor = .systemBlue
+        button.layer.shadowColor = UIColor.black.cgColor
+        button.layer.shadowOffset = CGSize(width: 4, height: 4)
+        button.layer.shadowRadius = 4
+        button.layer.shadowOpacity = 0.7
+        button.addTarget(self, action: #selector(setStatusButtonTapped), for: .touchUpInside)
+        return button.withConstraints()
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -88,28 +91,20 @@ final class ProfileHeaderView: UIView {
             profileImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
             profileImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             profileImageView.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 0.16),
-            profileImageView.widthAnchor.constraint(equalTo: profileImageView.heightAnchor)
-        ])
+            profileImageView.widthAnchor.constraint(equalTo: profileImageView.heightAnchor),
         
-        NSLayoutConstraint.activate([
             profileTitleLabel.topAnchor.constraint(equalTo: profileImageView.topAnchor, constant: 12),
-            profileTitleLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 22)
-        ])
-        
-        NSLayoutConstraint.activate([
+            profileTitleLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 22),
+       
             profileStatusLabel.bottomAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: -18),
             profileStatusLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 22),
-            profileStatusLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16)
-        ])
-        
-        NSLayoutConstraint.activate([
+            profileStatusLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+    
             statusTextField.topAnchor.constraint(equalTo: profileStatusLabel.bottomAnchor, constant: 12),
             statusTextField.leadingAnchor.constraint(equalTo: profileStatusLabel.leadingAnchor),
             statusTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            statusTextField.heightAnchor.constraint(equalToConstant: 40)
-        ])
+            statusTextField.heightAnchor.constraint(equalToConstant: 40),
         
-        NSLayoutConstraint.activate([
             setStatusButton.topAnchor.constraint(equalTo: statusTextField.bottomAnchor, constant: 16),
             setStatusButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             setStatusButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
