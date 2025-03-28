@@ -31,7 +31,7 @@ final class LogInTextField: UITextField {
         backgroundColor = .systemGray6
         autocorrectionType = .no
         autocapitalizationType = .none
-        returnKeyType = .done
+        returnKeyType = .continue
         clearButtonMode = .whileEditing
         contentVerticalAlignment = .center
         placeholder = title

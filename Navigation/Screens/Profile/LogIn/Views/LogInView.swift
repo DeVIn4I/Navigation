@@ -125,6 +125,7 @@ final class LogInView: UIView {
 extension LogInView: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if textField == emailTextField {
+            passwordTextField.returnKeyType = .done
             passwordTextField.becomeFirstResponder()
         } else {
             passwordTextField.resignFirstResponder()

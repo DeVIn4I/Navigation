@@ -19,8 +19,8 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         
         let window = UIWindow(windowScene: scene)
-        let post = Post(title: "First post")
-        let feedVC = FeedViewController(post: post)
+        let postTitle = "First post"
+        let feedVC = FeedViewController(postTitle: postTitle)
         feedVC.tabBarItem = UITabBarItem(
             title: "Лента",
             image: UIImage(systemName: "list.bullet"),
