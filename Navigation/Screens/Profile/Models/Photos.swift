@@ -13,9 +13,7 @@ struct Photo {
 
 extension Photo {
     static func makePreviewPhotos() -> [Photo] {
-        
         var photos: [Photo] = []
-        
         for i in 1...4 {
             if let image = UIImage(named: "\(i)") {
                 photos.append(Photo(image: image))
@@ -25,14 +23,17 @@ extension Photo {
     }
     
     static func makePhotos() -> [Photo] {
-        
         var photos: [Photo] = []
-        
-        for i in 1...24 {
+        for i in 1...Int.lastPhotoIndex {
             if let image = UIImage(named: "\(i)") {
                 photos.append(Photo(image: image))
             }
         }
         return photos
     }
+}
+
+private extension Int {
+    ///Индекс последнего фото для ленты Phots
+    static let lastPhotoIndex = 24
 }

@@ -27,7 +27,7 @@ final class PhotosViewController: UIViewController {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(
             PhotosCollectionViewCell.self,
-            forCellWithReuseIdentifier: PhotosCollectionViewCell.reuseID
+            forCellWithReuseIdentifier: PhotosCollectionViewCell.identifier
         )
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -46,7 +46,6 @@ final class PhotosViewController: UIViewController {
     }
  
     private func setupViews() {
-        title = "Photo Gallery"
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = .systemBackground
@@ -54,6 +53,8 @@ final class PhotosViewController: UIViewController {
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         navigationController?.navigationBar.compactAppearance = appearance
+        
+        title = "Photo Gallery"
         view.backgroundColor = .systemBackground
         [photosCollection].forEach { view.addSubview($0) }
     }
@@ -75,7 +76,7 @@ extension PhotosViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: PhotosCollectionViewCell.reuseID,
+            withReuseIdentifier: PhotosCollectionViewCell.identifier,
             for: indexPath
         ) as? PhotosCollectionViewCell else {
             return UICollectionViewCell()
@@ -94,7 +95,12 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: paramCollection.leftInsert, bottom: 0, right: paramCollection.rightInsert)
+        return UIEdgeInsets(
+            top: paramCollection.cellSpacing,
+            left: paramCollection.leftInsert,
+            bottom: paramCollection.cellSpacing,
+            right: paramCollection.rightInsert
+        )
     }
     
     func collectionView(_ collectionView: UICollectionView,

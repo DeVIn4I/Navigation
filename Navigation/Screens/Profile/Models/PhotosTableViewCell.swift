@@ -9,8 +9,6 @@ import UIKit
 
 final class PhotosTableViewCell: UITableViewCell {
 
-    static let reuseID = "PhotosTableViewCell"
-    
     private let paramCollection = UICollectionView.GeometricParameters(
         cellCount: 4,
         leftInsert: 12,
@@ -45,7 +43,7 @@ final class PhotosTableViewCell: UITableViewCell {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.register(
             PhotosCollectionViewCell.self,
-            forCellWithReuseIdentifier: PhotosCollectionViewCell.reuseID
+            forCellWithReuseIdentifier: PhotosCollectionViewCell.identifier
         )
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -96,7 +94,7 @@ extension PhotosTableViewCell: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(
-            withReuseIdentifier: PhotosCollectionViewCell.reuseID,
+            withReuseIdentifier: PhotosCollectionViewCell.identifier,
             for: indexPath
         ) as? PhotosCollectionViewCell else {
             return UICollectionViewCell()

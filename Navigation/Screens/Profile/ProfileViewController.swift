@@ -16,14 +16,13 @@ final class ProfileViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         tableView.sectionHeaderTopPadding = 0
-        
         tableView.register(
             PostTableViewCell.self,
-            forCellReuseIdentifier: PostTableViewCell.reuseID
+            forCellReuseIdentifier: PostTableViewCell.identifier
         )
         tableView.register(
             PhotosTableViewCell.self,
-            forCellReuseIdentifier: PhotosTableViewCell.reuseID
+            forCellReuseIdentifier: PhotosTableViewCell.identifier
         )
         return tableView.withConstraints()
     }()
@@ -52,7 +51,6 @@ final class ProfileViewController: UIViewController {
     
     private func setupConstarints() {
         let safeAreaGuide = view.safeAreaLayoutGuide
-        
         NSLayoutConstraint.activate([
             postsTableView.topAnchor.constraint(equalTo: safeAreaGuide.topAnchor),
             postsTableView.leadingAnchor.constraint(equalTo: safeAreaGuide.leadingAnchor),
@@ -76,7 +74,7 @@ extension ProfileViewController: UITableViewDataSource {
         
         if indexPath.section == 0 {
             guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: PhotosTableViewCell.reuseID,
+                withIdentifier: PhotosTableViewCell.identifier,
                 for: indexPath
             ) as? PhotosTableViewCell else {
                 return UITableViewCell()
@@ -85,7 +83,7 @@ extension ProfileViewController: UITableViewDataSource {
             return cell
         } else {
             guard let cell = tableView.dequeueReusableCell(
-                withIdentifier: PostTableViewCell.reuseID,
+                withIdentifier: PostTableViewCell.identifier,
                 for: indexPath
             ) as? PostTableViewCell else {
                 return UITableViewCell()

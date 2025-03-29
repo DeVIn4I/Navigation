@@ -24,3 +24,19 @@ extension UICollectionView {
         }
     }
 }
+
+protocol Reusable {
+    static var identifier: String { get }
+}
+
+extension UICollectionViewCell: Reusable {
+    static var identifier: String {
+        String(describing: self)
+    }
+}
+
+extension UITableViewCell: Reusable {
+    static var identifier: String {
+        String(describing: self)
+    }
+}

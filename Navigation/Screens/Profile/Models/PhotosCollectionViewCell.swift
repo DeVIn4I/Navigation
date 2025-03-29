@@ -1,5 +1,5 @@
 //
-//  PreviewPhotosCollectionViewCell.swift
+//  PhotosCollectionViewCell.swift
 //  Navigation
 //
 //  Created by Razumov Pavel on 29.03.2025.
@@ -8,8 +8,6 @@
 import UIKit
 
 final class PhotosCollectionViewCell: UICollectionViewCell {
-    
-    static let reuseID = "PreviewPhotosCollectionViewCell"
     
     private lazy var imageView: UIImageView = {
         let imageView = UIImageView()
