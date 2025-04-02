@@ -15,6 +15,7 @@ final class ProfileHeaderView: UIView {
         let imageView = UIImageView()
         imageView.image = UIImage(named: .profileImage)
         imageView.contentMode = .scaleAspectFill
+        imageView.layer.cornerRadius = 40
         imageView.clipsToBounds = true
         imageView.layer.borderWidth = 3
         imageView.layer.borderColor = UIColor.white.cgColor
@@ -36,7 +37,7 @@ final class ProfileHeaderView: UIView {
     
    private lazy var statusTextField: UITextField = {
        let textFiled = UITextField()
-       textFiled.placeholder = "Write something"
+       textFiled.placeholder = "Write something..."
        textFiled.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 8, height: 0))
        textFiled.leftViewMode = .always
        textFiled.font = .systemFont(ofSize: 15, weight: .regular)
@@ -103,7 +104,8 @@ final class ProfileHeaderView: UIView {
             setStatusButton.topAnchor.constraint(equalTo: statusTextField.bottomAnchor, constant: 16),
             setStatusButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
             setStatusButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            setStatusButton.heightAnchor.constraint(equalToConstant: 50)
+            setStatusButton.heightAnchor.constraint(equalToConstant: 50),
+            setStatusButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
         ])
     }
     

@@ -9,10 +9,10 @@ import UIKit
 
 final class PostViewController: UIViewController {
     
-    private let post: Post
+    private let postTitle: String
     
-    init(post: Post) {
-        self.post = post
+    init(postTitle: String) {
+        self.postTitle = postTitle
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -27,7 +27,7 @@ final class PostViewController: UIViewController {
     }
     
     private func setUpViews() {
-        title = post.title
+        title = postTitle
         view.backgroundColor = .systemYellow
     }
     

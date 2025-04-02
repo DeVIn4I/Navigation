@@ -9,7 +9,7 @@ import UIKit
 
 final class FeedViewController: UIViewController {
     
-    private let post: Post
+    private let postTitle: String
     private lazy var showPostFirstButton: CustomButton = {
         let button = CustomButton(title: "Show post1")
         button.addTarget(self, action: #selector(showPostButtonTapped), for: .touchUpInside)
@@ -29,8 +29,8 @@ final class FeedViewController: UIViewController {
         return stackView.withConstraints()
     }()
     
-    init(post: Post) {
-        self.post = post
+    init(postTitle: String) {
+        self.postTitle = postTitle
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -60,7 +60,7 @@ final class FeedViewController: UIViewController {
     }
     
     @objc private func showPostButtonTapped() {
-        let postVC = PostViewController(post: post)
+        let postVC = PostViewController(postTitle: postTitle)
         postVC.modalPresentationStyle = .fullScreen
         postVC.modalTransitionStyle = .coverVertical
         navigationController?.pushViewController(postVC, animated: true)

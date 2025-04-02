@@ -19,16 +19,16 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let scene = (scene as? UIWindowScene) else { return }
         
         let window = UIWindow(windowScene: scene)
-        let post = Post(title: "First post")
-        let feedVC = FeedViewController(post: post)
+        let postTitle = "First post"
+        let feedVC = FeedViewController(postTitle: postTitle)
         feedVC.tabBarItem = UITabBarItem(
             title: "Лента",
             image: UIImage(systemName: "list.bullet"),
             selectedImage: nil
         )
         
-        let profileVC = ProfileViewController()
-        profileVC.tabBarItem = UITabBarItem(
+        let logInVC = LogInViewController()
+        logInVC.tabBarItem = UITabBarItem(
             title: "Профиль",
             image: UIImage(systemName: "person.crop.circle"),
             selectedImage: nil
@@ -37,7 +37,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let tabbarController = UITabBarController()
         tabbarController.viewControllers = [
             feedVC,
-            profileVC
+            logInVC
         ].map { UINavigationController(rootViewController: $0) }
         
         window.rootViewController = tabbarController
