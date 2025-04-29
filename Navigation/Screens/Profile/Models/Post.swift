@@ -7,14 +7,14 @@
 
 import UIKit
 
-struct Post {
-    var author: String
-    var description: String
-    var image: String
-    var likes: Int
-    var views: Int
+public struct Post {
+    public var author: String
+    public var description: String
+    public var image: String
+    public var likes: Int
+    public var views: Int
     
-    static func makePosts() -> [Post] {
+    public static func makePosts() -> [Post] {
         [
             .init(
                 author: "Swift",

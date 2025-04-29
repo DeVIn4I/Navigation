@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import StorageService
 
 final class ProfileViewController: UIViewController {
     
@@ -45,8 +46,13 @@ final class ProfileViewController: UIViewController {
     
     private func setupViews() {
         title = "Profile"
-        view.backgroundColor = .systemBackground
         view.addSubview(postsTableView)
+        
+        #if DEBUG
+        view.backgroundColor = .systemBackground
+        #else
+        view.backgroundColor = .systemMint
+        #endif
     }
     
     private func setupConstarints() {
