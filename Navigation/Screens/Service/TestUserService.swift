@@ -1,17 +1,16 @@
 //
-//  CurrentUserService.swift
+//  TestUserService.swift
 //  Navigation
 //
 //  Created by Razumov Pavel on 13.05.2025.
 //
 
-import Foundation
+import UIKit
 
-final class CurrentUserService: UserService {
-    
+final class TestUserService: UserService {
     private var user: User
     
-    init(user: User = User.currentUser) {
+    init(user: User = User.testUser) {
         self.user = user
     }
     

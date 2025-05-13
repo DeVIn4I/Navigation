@@ -33,4 +33,11 @@ extension User {
         avatar: UIImage(named: "user-1")!,
         status: "veni vidi vici"
     )
+    
+    static let testUser = User(
+        login: "test",
+        fullName: "Test Full Name",
+        avatar: UIImage(systemName: "person.circle")!,
+        status: "Test status"
+    )
 }
