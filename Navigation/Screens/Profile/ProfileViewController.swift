@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import StorageService
 
 final class ProfileViewController: UIViewController {
     
     private var posts = Post.makePosts()
+    private var user: User?
     
     private lazy var postsTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
@@ -26,6 +28,15 @@ final class ProfileViewController: UIViewController {
         )
         return tableView.withConstraints()
     }()
+    
+    init(user: User?) {
+        self.user = user
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,8 +56,13 @@ final class ProfileViewController: UIViewController {
     
     private func setupViews() {
         title = "Profile"
-        view.backgroundColor = .systemBackground
         view.addSubview(postsTableView)
+        
+        #if DEBUG
+        view.backgroundColor = .systemBackground
+        #else
+        view.backgroundColor = .systemMint
+        #endif
     }
     
     private func setupConstarints() {
@@ -98,7 +114,9 @@ extension ProfileViewController: UITableViewDataSource {
 
 extension ProfileViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return section == 0 ? ProfileHeaderView() : nil
+        let headerView = ProfileHeaderView()
+        headerView.set(user: user)
+        return section == 0 ? headerView : nil
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {

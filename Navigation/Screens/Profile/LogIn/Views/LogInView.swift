@@ -55,7 +55,7 @@ final class LogInView: UIView {
         return button.withConstraints()
     }()
     
-    var logInButtonTappedCallback: (() -> Void)?
+    var logInButtonTappedCallback: ((String) -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -68,6 +68,13 @@ final class LogInView: UIView {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    public func resetUserData() {
+        emailTextField.text = nil
+        passwordTextField.text = nil
+        emailTextField.becomeFirstResponder()
+        textFieldChanged()
     }
     
     @objc private func textFieldChanged() {
@@ -85,7 +92,8 @@ final class LogInView: UIView {
     }
     
     @objc private func logInButtonTapped() {
-        logInButtonTappedCallback?()
+        guard let login = emailTextField.text else { return }
+        logInButtonTappedCallback?(login)
     }
     
     private func setupViews() {

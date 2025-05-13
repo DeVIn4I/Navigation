@@ -18,6 +18,22 @@ final class LogInViewController: UIViewController {
     
     private lazy var contentView = UIView().withConstraints()
     private lazy var logInView = LogInView().withConstraints()
+    private var userService: UserService
+    
+    init(userService: UserService = {
+        #if DEBUG
+        return TestUserService()
+        #else
+        return CurrentUserService()
+        #endif
+    }()) {
+        self.userService = userService
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,9 +58,21 @@ final class LogInViewController: UIViewController {
         scrollView.addSubview(contentView)
         contentView.addSubview(logInView)
         
-        logInView.logInButtonTappedCallback = { [weak self] in
-            let profileVC = ProfileViewController()
-            self?.navigationController?.pushViewController(profileVC, animated: true)
+        logInView.logInButtonTappedCallback = { [weak self] login in
+            guard let self else { return }
+            if let user = userService.checkUserWith(login: login) {
+                let profileVC = ProfileViewController(user: user)
+                self.navigationController?.pushViewController(profileVC, animated: true)
+            } else {
+                let model = AlertModel(
+                    title: "Ошибка авторизации!",
+                    message: "Неверный логин или пароль"
+                )
+                
+                showAlert(model, vc: self) {
+                    self.logInView.resetUserData()
+                }
+            }
         }
     }
     

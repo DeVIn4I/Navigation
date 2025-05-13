@@ -9,6 +9,7 @@ import UIKit
 
 final class ProfileHeaderView: UIView {
     
+    private var user: User?
     private var statusText: String?
     private var backgroundView: UIView?
     private var animateProfileImage: UIImageView?
@@ -81,12 +82,25 @@ final class ProfileHeaderView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func set(user: User?) {
+        self.user = user
+        updateUserData()
+    }
+    
     private func setupViews() {
         addSubview(profileImageView)
         addSubview(profileTitleLabel)
         addSubview(profileStatusLabel)
         addSubview(statusTextField)
         addSubview(setStatusButton)
+    }
+    
+    private func updateUserData() {
+        guard let user else { return }
+        
+        profileImageView.image = user.avatar
+        profileTitleLabel.text = user.fullName
+        profileStatusLabel.text = user.status
     }
     
     private func setupConstraints() {
@@ -117,10 +131,10 @@ final class ProfileHeaderView: UIView {
     }
     
     private func showProfileImageFullScreen() {
-        guard let window = window else { return }
+        guard let window, let user else { return }
         
         let originalProfileImageFrame = convert(profileImageView.frame, to: window)
-        let animateProfileImage = UIImageView(image: UIImage(named: .profileImage))
+        let animateProfileImage = UIImageView(image: user.avatar)
         animateProfileImage.frame = originalProfileImageFrame
         animateProfileImage.contentMode = .scaleAspectFit
         animateProfileImage.layer.cornerRadius = 40
