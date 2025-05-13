@@ -35,4 +35,17 @@ extension UIViewController {
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillShowNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: UIResponder.keyboardWillHideNotification, object: nil)
     }
+    
+    func showAlert(_ model: AlertModel, vc: UIViewController, handler: @escaping (() -> Void)) {
+        let alert = UIAlertController(
+            title: model.title,
+            message: model.message,
+            preferredStyle: .alert
+        )
+        let action = UIAlertAction(title: "OK", style: .default) { _ in
+            handler()
+        }
+        alert.addAction(action)
+        vc.present(alert, animated: true)
+    }
 }
