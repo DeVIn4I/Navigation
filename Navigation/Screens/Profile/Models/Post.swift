@@ -90,5 +90,5 @@ private extension String {
     ///Название изображения для отображения JavaScript
     static let javaScriptImageName = "js"
     ///Название изображения для отображения C++
-    static let cPlusPlusImageName = "c_plus_plus"
+    static let cPlusPlusImageName = "C_plus_plus"
 }
