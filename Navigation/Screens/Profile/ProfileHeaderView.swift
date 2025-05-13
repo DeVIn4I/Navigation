@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SnapKit
 
 final class ProfileHeaderView: UIView {
     
@@ -90,30 +91,34 @@ final class ProfileHeaderView: UIView {
     }
     
     private func setupConstraints() {
-        NSLayoutConstraint.activate([
-            profileImageView.topAnchor.constraint(equalTo: topAnchor, constant: 16),
-            profileImageView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            profileImageView.heightAnchor.constraint(equalToConstant: 80),
-            profileImageView.widthAnchor.constraint(equalTo: profileImageView.heightAnchor),
-            
-            profileTitleLabel.topAnchor.constraint(equalTo: profileImageView.topAnchor, constant: 12),
-            profileTitleLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 22),
-            
-            profileStatusLabel.bottomAnchor.constraint(equalTo: profileImageView.bottomAnchor, constant: -18),
-            profileStatusLabel.leadingAnchor.constraint(equalTo: profileImageView.trailingAnchor, constant: 22),
-            profileStatusLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            
-            statusTextField.topAnchor.constraint(equalTo: profileStatusLabel.bottomAnchor, constant: 12),
-            statusTextField.leadingAnchor.constraint(equalTo: profileStatusLabel.leadingAnchor),
-            statusTextField.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            statusTextField.heightAnchor.constraint(equalToConstant: 40),
-            
-            setStatusButton.topAnchor.constraint(equalTo: statusTextField.bottomAnchor, constant: 16),
-            setStatusButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 16),
-            setStatusButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
-            setStatusButton.heightAnchor.constraint(equalToConstant: 50),
-            setStatusButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
-        ])
+        profileImageView.snp.makeConstraints {
+            $0.top.leading.equalToSuperview().inset(16)
+            $0.width.height.equalTo(80)
+        }
+        
+        profileTitleLabel.snp.makeConstraints {
+            $0.top.equalTo(profileImageView.snp.top).inset(12)
+            $0.leading.equalTo(profileImageView.snp.trailing).offset(22)
+        }
+        
+        profileStatusLabel.snp.makeConstraints {
+            $0.leading.equalTo(profileTitleLabel.snp.leading)
+            $0.trailing.equalToSuperview().inset(16)
+            $0.bottom.equalTo(profileImageView.snp.bottom).inset(18)
+        }
+        
+        statusTextField.snp.makeConstraints {
+            $0.top.equalTo(profileStatusLabel.snp.bottom).offset(12)
+            $0.leading.equalTo(profileStatusLabel.snp.leading)
+            $0.trailing.equalToSuperview().inset(16)
+            $0.height.equalTo(40)
+        }
+        
+        setStatusButton.snp.makeConstraints {
+            $0.top.equalTo(statusTextField.snp.bottom).offset(16)
+            $0.leading.trailing.bottom.equalToSuperview().inset(16)
+            $0.height.equalTo(50)
+        }
     }
     
     private func showProfileImageFullScreen() {
