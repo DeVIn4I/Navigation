@@ -7,10 +7,12 @@
 
 import UIKit
 import StorageService
+import iOSIntPackage
 
 final class PostTableViewCell: UITableViewCell {
     
     static let reuseID = "PostTableViewCell"
+    private let imageProcessor = ImageProcessor()
 
     private lazy var authorTitleLabel: UILabel = {
         let label = UILabel()
@@ -97,8 +99,16 @@ final class PostTableViewCell: UITableViewCell {
     }
     
     func configure(with model: Post) {
+        guard let image = UIImage(named: model.image) else { return }
+        
+        imageProcessor.processImage(
+            sourceImage: image,
+            filter: .crystallize(radius: 8)
+        ) { image in
+            postImageView.image = image
+        }
+        
         authorTitleLabel.text = model.author
-        postImageView.image = UIImage(named: model.image)
         descriptionPostLabel.text = model.description
         likesLabel.text = "Likes: \(model.likes)"
         viewsLabel.text = "Views: \(model.views)"

@@ -35,6 +35,7 @@
 		86CF048B2DD33611008135F5 /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86CF04662DD33611008135F5 /* Post.swift */; };
 		86CF048F2DD33617008135F5 /* StorageService.h in Headers */ = {isa = PBXBuildFile; fileRef = 86CF048C2DD33617008135F5 /* StorageService.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		86CF04902DD33617008135F5 /* StorageService.docc in Sources */ = {isa = PBXBuildFile; fileRef = 86CF048D2DD33617008135F5 /* StorageService.docc */; };
+		86CF04932DD34062008135F5 /* iOSIntPackage in Frameworks */ = {isa = PBXBuildFile; productRef = 86CF04922DD34062008135F5 /* iOSIntPackage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -100,6 +101,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86CF04932DD34062008135F5 /* iOSIntPackage in Frameworks */,
 				868360162DC0B488001C5E41 /* StorageService.framework in Frameworks */,
 				08994248470362BD613FC31D /* Pods_Navigation.framework in Frameworks */,
 			);
@@ -392,6 +394,9 @@
 				Base,
 			);
 			mainGroup = 867A1EEA2D81867400A2FC52;
+			packageReferences = (
+				86CF04912DD34062008135F5 /* XCRemoteSwiftPackageReference "iOSIntPackage" */,
+			);
 			productRefGroup = 867A1EF42D81867400A2FC52 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -810,6 +815,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		86CF04912DD34062008135F5 /* XCRemoteSwiftPackageReference "iOSIntPackage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/TrueMax/iOSIntPackage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		86CF04922DD34062008135F5 /* iOSIntPackage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 86CF04912DD34062008135F5 /* XCRemoteSwiftPackageReference "iOSIntPackage" */;
+			productName = iOSIntPackage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 867A1EEB2D81867400A2FC52 /* Project object */;
 }
