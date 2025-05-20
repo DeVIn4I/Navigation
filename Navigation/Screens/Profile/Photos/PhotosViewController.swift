@@ -6,10 +6,13 @@
 //
 
 import UIKit
+import iOSIntPackage
 
 final class PhotosViewController: UIViewController {
     
     static let reuseID = "PhotosTableViewCell"
+    
+    private let imagePublisherFacade = ImagePublisherFacade()
     
     private let paramCollection = UICollectionView.GeometricParameters(
         cellCount: 3,
@@ -18,7 +21,8 @@ final class PhotosViewController: UIViewController {
         cellSpacing: 8
     )
     
-    private var photos = Photo.makePhotos()
+    private var photos: [Photo] = []
+//    private var photos = Photo.makePhotos()
 
     private lazy var photosCollection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -43,6 +47,20 @@ final class PhotosViewController: UIViewController {
         super.viewDidLoad()
         setupViews()
         setupConstraints()
+        
+        imagePublisherFacade.subscribe(self)
+        let defaultImage = Photo.makePhotos().map(\.image)
+        
+        imagePublisherFacade.addImagesWithTimer(
+            time: 0.5,
+            repeat: 24,
+            userImages: defaultImage
+        )
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        imagePublisherFacade.removeSubscription(for: self)
     }
  
     private func setupViews() {
@@ -113,5 +131,15 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout {
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return paramCollection.cellSpacing
+    }
+}
+
+extension PhotosViewController: ImageLibrarySubscriber {
+    func receive(images: [UIImage]) {
+        photos = images.map { Photo(image: $0) }
+        
+        DispatchQueue.main.async {
+            self.photosCollection.reloadData()
+        }
     }
 }

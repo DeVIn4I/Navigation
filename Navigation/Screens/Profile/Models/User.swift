@@ -8,36 +8,17 @@
 import UIKit
 
 final class User {
-    let login: String
     let fullName: String
     let avatar: UIImage
     let status: String
     
     init(
-        login: String,
         fullName: String,
         avatar: UIImage,
         status: String
     ) {
-        self.login = login
         self.fullName = fullName
         self.avatar = avatar
         self.status = status
     }
-}
-
-extension User {
-    static let currentUser = User(
-        login: "develop",
-        fullName: "Razumov Pavel",
-        avatar: UIImage(named: "user-1")!,
-        status: "veni vidi vici"
-    )
-    
-    static let testUser = User(
-        login: "test",
-        fullName: "Test Full Name",
-        avatar: UIImage(systemName: "person.circle")!,
-        status: "Test status"
-    )
 }

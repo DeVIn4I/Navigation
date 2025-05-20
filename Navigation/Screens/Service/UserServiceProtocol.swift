@@ -8,5 +8,10 @@
 import Foundation
 
 protocol UserService {
-    func checkUserWith(login: String) -> User?
+    var user: User { get }
+    func getUser() -> User
+}
+
+extension UserService {
+    func getUser() -> User { user }
 }

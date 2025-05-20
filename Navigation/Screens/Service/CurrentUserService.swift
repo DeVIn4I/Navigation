@@ -5,17 +5,13 @@
 //  Created by Razumov Pavel on 13.05.2025.
 //
 
-import Foundation
+import UIKit
 
 final class CurrentUserService: UserService {
     
-    private var user: User
-    
-    init(user: User = User.currentUser) {
-        self.user = user
-    }
-    
-    func checkUserWith(login: String) -> User? {
-      login == user.login ? user : nil
-    }
+    let user: User = User(
+        fullName: "Release Name",
+        avatar: UIImage(named: "user-1")!,
+        status: "Release user status"
+    )
 }
