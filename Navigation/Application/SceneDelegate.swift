@@ -10,6 +10,8 @@ import UIKit
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    
+    private let loginDelegate = LoginInspector()
 
     func scene(
         _ scene: UIScene,
@@ -28,6 +30,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
         
         let logInVC = LogInViewController()
+        logInVC.loginDelegate = loginDelegate
         logInVC.tabBarItem = UITabBarItem(
             title: "Профиль",
             image: UIImage(systemName: "person.crop.circle"),
