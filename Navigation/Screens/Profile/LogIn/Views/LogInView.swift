@@ -55,7 +55,7 @@ final class LogInView: UIView {
         return button.withConstraints()
     }()
     
-    var logInButtonTappedCallback: ((String) -> Void)?
+    var logInButtonTappedCallback: ((String, String) -> Void)?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -92,8 +92,11 @@ final class LogInView: UIView {
     }
     
     @objc private func logInButtonTapped() {
-        guard let login = emailTextField.text else { return }
-        logInButtonTappedCallback?(login)
+        guard
+            let login = emailTextField.text,
+            let password = passwordTextField.text
+        else { return }
+        logInButtonTappedCallback?(login, password)
     }
     
     private func setupViews() {

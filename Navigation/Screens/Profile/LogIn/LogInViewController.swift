@@ -20,6 +20,8 @@ final class LogInViewController: UIViewController {
     private lazy var logInView = LogInView().withConstraints()
     private var userService: UserService
     
+    weak var loginDelegate: LoginViewControllerDelegate?
+    
     init(userService: UserService = {
         #if DEBUG
         return TestUserService()
@@ -58,9 +60,11 @@ final class LogInViewController: UIViewController {
         scrollView.addSubview(contentView)
         contentView.addSubview(logInView)
         
-        logInView.logInButtonTappedCallback = { [weak self] login in
+        logInView.logInButtonTappedCallback = { [weak self] login, password in
             guard let self else { return }
-            if let user = userService.checkUserWith(login: login) {
+          
+            if loginDelegate?.check(login: login, password: password) == true {
+                let user = userService.getUser()
                 let profileVC = ProfileViewController(user: user)
                 self.navigationController?.pushViewController(profileVC, animated: true)
             } else {
@@ -68,7 +72,6 @@ final class LogInViewController: UIViewController {
                     title: "Ошибка авторизации!",
                     message: "Неверный логин или пароль"
                 )
-                
                 showAlert(model, vc: self) {
                     self.logInView.resetUserData()
                 }

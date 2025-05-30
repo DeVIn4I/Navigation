@@ -8,13 +8,10 @@
 import UIKit
 
 final class TestUserService: UserService {
-    private var user: User
     
-    init(user: User = User.testUser) {
-        self.user = user
-    }
-    
-    func checkUserWith(login: String) -> User? {
-      login == user.login ? user : nil
-    }
+    let user: User = User(
+        fullName: "Razumov Pavel",
+        avatar: UIImage(named: "user-1")!,
+        status: "veni vidi vici"
+    )
 }
