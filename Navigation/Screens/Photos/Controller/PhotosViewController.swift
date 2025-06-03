@@ -22,8 +22,6 @@ final class PhotosViewController: UIViewController {
     )
     
     private var photos: [Photo] = []
-//    private var photos = Photo.makePhotos()
-
     private lazy var photosCollection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
