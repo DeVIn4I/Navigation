@@ -6,10 +6,14 @@
 //
 
 import UIKit
+import SnapKit
 
 final class CustomButton: UIButton {
     
-    init(title: String) {
+    private var onTap: (() -> Void)?
+    
+    init(title: String, onTap: (() -> Void)? = nil) {
+        self.onTap = onTap
         super.init(frame: .zero)
         setupButton(title: title)
     }
@@ -25,9 +29,16 @@ final class CustomButton: UIButton {
         layer.cornerRadius = 8
         translatesAutoresizingMaskIntoConstraints = false
         
-        NSLayoutConstraint.activate([
-            widthAnchor.constraint(equalToConstant: 140),
-            heightAnchor.constraint(equalToConstant: 40)
-        ])
+        snp.makeConstraints {
+            $0.width.equalTo(140)
+            $0.height.equalTo(40)
+        }
+        
+        addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+    }
+    
+    @objc
+    private func buttonTapped() {
+        onTap?()
     }
 }

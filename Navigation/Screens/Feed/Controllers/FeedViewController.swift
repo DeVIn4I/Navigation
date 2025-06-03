@@ -10,15 +10,29 @@ import UIKit
 final class FeedViewController: UIViewController {
     
     private let postTitle: String
+//    private lazy var showPostFirstButton: CustomButton = {
+//        let button = CustomButton(title: "Show post1")
+//        button.addTarget(self, action: #selector(showPostButtonTapped), for: .touchUpInside)
+//        return button.withConstraints()
+//    }()
+//    
+//    private lazy var showPostSecondButton: CustomButton = {
+//        let button = CustomButton(title: "Show post2")
+//        button.addTarget(self, action: #selector(showPostButtonTapped), for: .touchUpInside)
+//        return button.withConstraints()
+//    }()
+    
     private lazy var showPostFirstButton: CustomButton = {
-        let button = CustomButton(title: "Show post1")
-        button.addTarget(self, action: #selector(showPostButtonTapped), for: .touchUpInside)
+        let button = CustomButton(title: "Show post 1") { [weak self] in
+            self?.showPost()
+        }
         return button.withConstraints()
     }()
     
     private lazy var showPostSecondButton: CustomButton = {
-        let button = CustomButton(title: "Show post2")
-        button.addTarget(self, action: #selector(showPostButtonTapped), for: .touchUpInside)
+        let button = CustomButton(title: "Show post 2") { [weak self] in
+            self?.showPost()
+        }
         return button.withConstraints()
     }()
     
@@ -59,7 +73,7 @@ final class FeedViewController: UIViewController {
         ])
     }
     
-    @objc private func showPostButtonTapped() {
+    private func showPost() {
         let postVC = PostViewController(postTitle: postTitle)
         postVC.modalPresentationStyle = .fullScreen
         postVC.modalTransitionStyle = .coverVertical

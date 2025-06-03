@@ -10,8 +10,9 @@ import UIKit
 final class InfoViewController: UIViewController {
     
     private lazy var showAlertButton: CustomButton = {
-        let button = CustomButton(title: "Show alert")
-        button.addTarget(self, action: #selector(showAlertButtonTapped), for: .touchUpInside)
+        let button = CustomButton(title: "Show alert") { [weak self] in
+            self?.showAlert()
+        }
         return button.withConstraints()
     }()
 
@@ -49,10 +50,5 @@ final class InfoViewController: UIViewController {
         }
         [cancelAction, okAction].forEach { alert.addAction($0) }
         present(alert, animated: true)
-    }
-    
-    @objc
-    private func showAlertButtonTapped() {
-        showAlert()
     }
 }
