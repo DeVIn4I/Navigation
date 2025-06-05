@@ -46,7 +46,7 @@
 		867A1F052D81867500A2FC52 /* Exceptions for "Navigation" folder in "Navigation" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Screens/Profile/Models/Post.swift,
+				Screens/Post/Model/Post.swift,
 				"Supporting Files/Info.plist",
 			);
 			target = 867A1EF22D81867400A2FC52 /* Navigation */;
@@ -61,7 +61,7 @@
 		8683601E2DC0B4C9001C5E41 /* Exceptions for "Navigation" folder in "StorageService" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Screens/Profile/Models/Post.swift,
+				Screens/Post/Model/Post.swift,
 			);
 			target = 8683600D2DC0B487001C5E41 /* StorageService */;
 		};
