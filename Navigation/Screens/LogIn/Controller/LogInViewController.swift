@@ -65,7 +65,8 @@ final class LogInViewController: UIViewController {
           
             if loginDelegate?.check(login: login, password: password) == true {
                 let user = userService.getUser()
-                let profileVC = ProfileViewController(user: user)
+                let viewModel = ProfileViewModel(user: user)
+                let profileVC = ProfileViewController(viewModel: viewModel)
                 self.navigationController?.pushViewController(profileVC, animated: true)
             } else {
                 let model = AlertModel(

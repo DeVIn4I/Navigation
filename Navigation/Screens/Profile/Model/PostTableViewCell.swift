@@ -96,7 +96,7 @@ final class PostTableViewCell: UITableViewCell {
         ])
     }
     
-    func configure(with model: Post) {
+    func configure(with model: PostCellViewModel) {
         authorTitleLabel.text = model.author
         postImageView.image = UIImage(named: model.image)
         descriptionPostLabel.text = model.description
