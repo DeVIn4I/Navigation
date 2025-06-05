@@ -10,10 +10,11 @@ import SnapKit
 
 final class CustomButton: UIButton {
     
-    private var onTap: (() -> Void)?
+    typealias Action = () -> Void
+    private var buttonAction: Action
     
-    init(title: String, onTap: (() -> Void)? = nil) {
-        self.onTap = onTap
+    init(title: String, action: @escaping Action) {
+        self.buttonAction = action
         super.init(frame: .zero)
         setupButton(title: title)
     }
@@ -39,6 +40,6 @@ final class CustomButton: UIButton {
     
     @objc
     private func buttonTapped() {
-        onTap?()
+        buttonAction()
     }
 }
