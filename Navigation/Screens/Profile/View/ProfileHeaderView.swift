@@ -8,9 +8,8 @@
 import UIKit
 
 final class ProfileHeaderView: UIView {
-    
-    private var user: User?
-    private var statusText: String?
+
+    private let viewModel: ProfileHeaderViewViewModel
     private var backgroundView: UIView?
     private var animateProfileImage: UIImageView?
     private var closeButton: UIButton?
@@ -54,7 +53,6 @@ final class ProfileHeaderView: UIView {
         textFiled.layer.borderWidth = 1
         textFiled.layer.borderColor = UIColor.black.cgColor
         textFiled.backgroundColor = .white
-        textFiled.addTarget(self, action: #selector(statusTextChanged), for: .editingChanged)
         return textFiled.withConstraints()
     }()
     
@@ -72,19 +70,29 @@ final class ProfileHeaderView: UIView {
         return button.withConstraints()
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(viewModel: ProfileHeaderViewViewModel) {
+        self.viewModel = viewModel
+        super.init(frame: .zero)
         setupViews()
         setupConstraints()
+        bind()
+        updateFromViewModel()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func set(user: User?) {
-        self.user = user
-        updateUserData()
+    private func updateFromViewModel() {
+        profileImageView.image = viewModel.user?.avatar
+        profileTitleLabel.text = viewModel.user?.fullName
+        profileStatusLabel.text = viewModel.user?.status
+    }
+    
+    private func bind() {
+        viewModel.updateStatusText = { [weak self] status in
+            self?.profileStatusLabel.text = status
+        }
     }
     
     private func setupViews() {
@@ -93,14 +101,6 @@ final class ProfileHeaderView: UIView {
         addSubview(profileStatusLabel)
         addSubview(statusTextField)
         addSubview(setStatusButton)
-    }
-    
-    private func updateUserData() {
-        guard let user else { return }
-        
-        profileImageView.image = user.avatar
-        profileTitleLabel.text = user.fullName
-        profileStatusLabel.text = user.status
     }
     
     private func setupConstraints() {
@@ -131,10 +131,10 @@ final class ProfileHeaderView: UIView {
     }
     
     private func showProfileImageFullScreen() {
-        guard let window, let user else { return }
+        guard let window else { return }
         
         let originalProfileImageFrame = convert(profileImageView.frame, to: window)
-        let animateProfileImage = UIImageView(image: user.avatar)
+        let animateProfileImage = UIImageView(image: viewModel.user?.avatar)
         animateProfileImage.frame = originalProfileImageFrame
         animateProfileImage.contentMode = .scaleAspectFit
         animateProfileImage.layer.cornerRadius = 40
@@ -187,16 +187,8 @@ final class ProfileHeaderView: UIView {
         }
     }
     
-    @objc private func statusTextChanged(_ textField: UITextField) {
-        statusText = textField.text ?? ""
-    }
-    
     @objc private func setStatusButtonTapped() {
-        if let text = statusText, text.isEmpty == false {
-            profileStatusLabel.text = text
-        } else {
-            profileStatusLabel.text = .defaultStatusText
-        }
+        viewModel.updateStatus(statusTextField.text ?? "")
         statusTextField.text = nil
         statusTextField.resignFirstResponder()
     }
@@ -232,15 +224,4 @@ final class ProfileHeaderView: UIView {
             animateProfileImage.removeFromSuperview()
         }
     }
-}
-
-private extension String {
-    ///Название изображения для отображения профиля
-    static let profileImage = "profileImage"
-    ///Название изображения для отображения профиля
-    static let profileTitle = "iOS-Developer"
-    ///Тайтл для кнопки "Установить статус"
-    static let setStatusTitle = "Set status"
-    ///Текст статуса по умолчанию
-    static let defaultStatusText = "Write something about yourself"
 }

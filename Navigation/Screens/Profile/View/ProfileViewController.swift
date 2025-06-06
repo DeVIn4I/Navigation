@@ -9,10 +9,7 @@ import UIKit
 import StorageService
 
 final class ProfileViewController: UIViewController {
-    
-    private var posts = Post.makePosts()
-    private var user: User?
-    
+
     private lazy var postsTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.delegate = self
@@ -29,8 +26,10 @@ final class ProfileViewController: UIViewController {
         return tableView.withConstraints()
     }()
     
-    init(user: User?) {
-        self.user = user
+    private let viewModel: ProfileViewModel
+    
+    init(viewModel: ProfileViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -79,11 +78,11 @@ final class ProfileViewController: UIViewController {
 extension ProfileViewController: UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        2
+        viewModel.numberOfSection
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        section == 0 ? 1 : posts.count
+        section == 0 ? 1 : viewModel.numberOfPosts
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -104,7 +103,7 @@ extension ProfileViewController: UITableViewDataSource {
             ) as? PostTableViewCell else {
                 return UITableViewCell()
             }
-            let model = posts[indexPath.row]
+            let model = viewModel.posts[indexPath.row]
             cell.configure(with: model)
             cell.selectionStyle = .none
             return cell
@@ -114,8 +113,8 @@ extension ProfileViewController: UITableViewDataSource {
 
 extension ProfileViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = ProfileHeaderView()
-        headerView.set(user: user)
+        let viewModel = ProfileHeaderViewViewModel(user: viewModel.user)
+        let headerView = ProfileHeaderView(viewModel: viewModel)        
         return section == 0 ? headerView : nil
     }
     
