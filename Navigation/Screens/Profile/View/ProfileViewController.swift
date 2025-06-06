@@ -9,12 +9,7 @@ import UIKit
 import StorageService
 
 final class ProfileViewController: UIViewController {
-    
-//    private var posts = Post.makePosts()
-//    private var user: User?
-    
-    private let viewModel: ProfileViewModel
-    
+
     private lazy var postsTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.delegate = self
@@ -30,6 +25,8 @@ final class ProfileViewController: UIViewController {
         )
         return tableView.withConstraints()
     }()
+    
+    private let viewModel: ProfileViewModel
     
     init(viewModel: ProfileViewModel) {
         self.viewModel = viewModel
@@ -106,8 +103,8 @@ extension ProfileViewController: UITableViewDataSource {
             ) as? PostTableViewCell else {
                 return UITableViewCell()
             }
-            let viewModel = viewModel.posts[indexPath.row]
-            cell.configure(with: viewModel)
+            let model = viewModel.posts[indexPath.row]
+            cell.configure(with: model)
             cell.selectionStyle = .none
             return cell
         }
@@ -116,9 +113,8 @@ extension ProfileViewController: UITableViewDataSource {
 
 extension ProfileViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let headerView = ProfileHeaderView()
         let viewModel = ProfileHeaderViewViewModel(user: viewModel.user)
-        headerView.viewModel = viewModel
+        let headerView = ProfileHeaderView(viewModel: viewModel)        
         return section == 0 ? headerView : nil
     }
     

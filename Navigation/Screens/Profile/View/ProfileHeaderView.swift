@@ -9,12 +9,7 @@ import UIKit
 
 final class ProfileHeaderView: UIView {
 
-    var viewModel: ProfileHeaderViewViewModel? {
-        didSet {
-            updateFromViewModel()
-        }
-    }
-    
+    private let viewModel: ProfileHeaderViewViewModel
     private var backgroundView: UIView?
     private var animateProfileImage: UIImageView?
     private var closeButton: UIButton?
@@ -75,27 +70,29 @@ final class ProfileHeaderView: UIView {
         return button.withConstraints()
     }()
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(viewModel: ProfileHeaderViewViewModel) {
+        self.viewModel = viewModel
+        super.init(frame: .zero)
         setupViews()
         setupConstraints()
+        bind()
+        updateFromViewModel()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    func updateFromViewModel() {
-        guard let viewModel else { return }
-        
+    
+    private func updateFromViewModel() {
         profileImageView.image = viewModel.user?.avatar
         profileTitleLabel.text = viewModel.user?.fullName
         profileStatusLabel.text = viewModel.user?.status
-        
+    }
+    
+    private func bind() {
         viewModel.updateStatusText = { [weak self] status in
             self?.profileStatusLabel.text = status
         }
-            
     }
     
     private func setupViews() {
@@ -134,7 +131,7 @@ final class ProfileHeaderView: UIView {
     }
     
     private func showProfileImageFullScreen() {
-        guard let window, let viewModel else { return }
+        guard let window else { return }
         
         let originalProfileImageFrame = convert(profileImageView.frame, to: window)
         let animateProfileImage = UIImageView(image: viewModel.user?.avatar)
@@ -191,7 +188,7 @@ final class ProfileHeaderView: UIView {
     }
     
     @objc private func setStatusButtonTapped() {
-        viewModel?.updateStatus(statusTextField.text ?? "")
+        viewModel.updateStatus(statusTextField.text ?? "")
         statusTextField.text = nil
         statusTextField.resignFirstResponder()
     }

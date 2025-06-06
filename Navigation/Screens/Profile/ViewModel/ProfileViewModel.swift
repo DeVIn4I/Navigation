@@ -10,7 +10,7 @@ import StorageService
 
 final class ProfileViewModel {
     
-    private(set) var posts: [PostCellViewModel]
+    private(set) var posts: [Post]
     private(set) var user: User?
     
     var numberOfPosts: Int {
@@ -21,6 +21,6 @@ final class ProfileViewModel {
     
     init(user: User?) {
         self.user = user
-        self.posts = Post.makePosts().map { PostCellViewModel(post: $0) }
+        self.posts = Post.makePosts()
     }
 }
