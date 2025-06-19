@@ -13,6 +13,8 @@ final class FeedViewController: UIViewController {
     private let feedModel: FeedModelProtocol
     private let checkWordView = CheckWordView()
     
+    weak var coordinator: FeedCoordinator?
+    
     init(postTitle: String, feedModel: FeedModelProtocol) {
         self.postTitle = postTitle
         self.feedModel = feedModel
@@ -43,10 +45,7 @@ final class FeedViewController: UIViewController {
     }
     
     private func showPost() {
-        let postVC = PostViewController(postTitle: postTitle)
-        postVC.modalPresentationStyle = .fullScreen
-        postVC.modalTransitionStyle = .coverVertical
-        navigationController?.pushViewController(postVC, animated: true)
+        coordinator?.showPost(title: postTitle)
     }
     
     private func bind() {
