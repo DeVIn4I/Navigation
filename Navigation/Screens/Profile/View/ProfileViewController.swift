@@ -27,6 +27,7 @@ final class ProfileViewController: UIViewController {
     }()
     
     private let viewModel: ProfileViewModel
+    weak var coordinator: ProfileCoordinator?
     
     init(viewModel: ProfileViewModel) {
         self.viewModel = viewModel
@@ -128,8 +129,7 @@ extension ProfileViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
-            let photosVC = PhotosViewController()
-            navigationController?.pushViewController(photosVC, animated: true)
+            coordinator?.showPhotos()
         }
     }
 }

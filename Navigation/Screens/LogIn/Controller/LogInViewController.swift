@@ -21,6 +21,7 @@ final class LogInViewController: UIViewController {
     private var userService: UserService
     
     weak var loginDelegate: LoginViewControllerDelegate?
+    weak var coordinator: ProfileCoordinator?
     
     init(userService: UserService = {
         #if DEBUG
@@ -64,10 +65,7 @@ final class LogInViewController: UIViewController {
             guard let self else { return }
           
             if loginDelegate?.check(login: login, password: password) == true {
-                let user = userService.getUser()
-                let viewModel = ProfileViewModel(user: user)
-                let profileVC = ProfileViewController(viewModel: viewModel)
-                self.navigationController?.pushViewController(profileVC, animated: true)
+                coordinator?.showProfile()
             } else {
                 let model = AlertModel(
                     title: "Ошибка авторизации!",
