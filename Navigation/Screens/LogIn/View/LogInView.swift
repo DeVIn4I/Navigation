@@ -55,6 +55,20 @@ final class LogInView: UIView {
         return button.withConstraints()
     }()
     
+    private lazy var choosePasswordButton: UIButton = {
+        let btn = UIButton(type: .system)
+        btn.titleLabel?.textColor = .systemBlue
+        btn.setTitle("Подобрать пароль", for: .normal)
+        btn.addTarget(self, action: #selector(bruteForcePassword), for: .touchUpInside)
+        return btn.withConstraints()
+    }()
+    
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        let activityIndicator = UIActivityIndicatorView(style: .medium)
+        activityIndicator.hidesWhenStopped = true
+        return activityIndicator.withConstraints()
+    }()
+    
     var logInButtonTappedCallback: ((String, String) -> Void)?
     
     override init(frame: CGRect) {
@@ -99,10 +113,39 @@ final class LogInView: UIView {
         logInButtonTappedCallback?(login, password)
     }
     
+    @objc
+    private func bruteForcePassword() {
+        passwordTextField.text = nil
+        activityIndicator.startAnimating()
+        choosePasswordButton.isUserInteractionEnabled = false
+        choosePasswordButton.tintColor = .systemGray
+        
+        DispatchQueue.global(qos: .background).async {
+            let ALLOWED_CHARACTERS:   [String] = String().printable.map { String($0) }
+            let currentPassword = Checker.shared.getPassword
+            var password: String = ""
+            
+            while password != currentPassword {
+                password = BruteForce.shared.generateBruteForce(password, fromArray: ALLOWED_CHARACTERS)
+            }
+            
+            DispatchQueue.main.async {
+                self.activityIndicator.stopAnimating()
+                self.passwordTextField.isSecureTextEntry = false
+                self.passwordTextField.text = password
+                self.textFieldChanged()
+                self.choosePasswordButton.isUserInteractionEnabled = true
+                self.choosePasswordButton.tintColor = .systemBlue
+            }
+        }
+    }
+    
     private func setupViews() {
         addSubview(logoImageView)
         addSubview(logInStackView)
         addSubview(logInButton)
+        addSubview(choosePasswordButton)
+        passwordTextField.addSubview(activityIndicator)
         emailTextField.delegate = self
         passwordTextField.delegate = self
     }
@@ -127,8 +170,16 @@ final class LogInView: UIView {
             logInButton.topAnchor.constraint(equalTo: logInStackView.bottomAnchor, constant: 16),
             logInButton.leadingAnchor.constraint(equalTo: leadingAnchor),
             logInButton.trailingAnchor.constraint(equalTo: trailingAnchor),
-            logInButton.bottomAnchor.constraint(equalTo: bottomAnchor),
-            logInButton.heightAnchor.constraint(equalToConstant: 50)
+            logInButton.heightAnchor.constraint(equalToConstant: 50),
+            
+            choosePasswordButton.topAnchor.constraint(equalTo: logInButton.bottomAnchor, constant: 16),
+            choosePasswordButton.trailingAnchor.constraint(equalTo: logInButton.trailingAnchor),
+            choosePasswordButton.bottomAnchor.constraint(equalTo: bottomAnchor),
+            choosePasswordButton.heightAnchor.constraint(equalToConstant: 30),
+            choosePasswordButton.widthAnchor.constraint(equalToConstant: 150),
+            
+            activityIndicator.centerXAnchor.constraint(equalTo: passwordTextField.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: passwordTextField.centerYAnchor)
         ])
     }
 }
