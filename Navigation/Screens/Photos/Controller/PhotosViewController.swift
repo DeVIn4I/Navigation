@@ -12,7 +12,9 @@ final class PhotosViewController: UIViewController {
     
     static let reuseID = "PhotosTableViewCell"
     
-    private let imagePublisherFacade = ImagePublisherFacade()
+    private let imageProcessor = ImageProcessor()
+    private let selectedFilter = ColorFilter.fade
+    private var photos: [Photo] = []
     
     private let paramCollection = UICollectionView.GeometricParameters(
         cellCount: 3,
@@ -21,7 +23,6 @@ final class PhotosViewController: UIViewController {
         cellSpacing: 8
     )
     
-    private var photos: [Photo] = []
     private lazy var photosCollection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
@@ -46,26 +47,37 @@ final class PhotosViewController: UIViewController {
         setupViews()
         setupConstraints()
         
-        imagePublisherFacade.subscribe(self)
-        let defaultImage = Photo.makePhotos().map(\.image)
-        
-        imagePublisherFacade.addImagesWithTimer(
-            time: 0.5,
-            repeat: 24,
-            userImages: defaultImage
-        )
+        processImages(qos: .userInitiated)
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        imagePublisherFacade.removeSubscription(for: self)
+    private func processImages(qos: QualityOfService) {
+        let photos = Photo.makePhotos().map { $0.image }
+        let startTime = CFAbsoluteTimeGetCurrent()
+        
+        imageProcessor.processImagesOnThread(
+            sourceImages: photos,
+            filter: selectedFilter,
+            qos: qos) { [weak self] images in
+                guard let self else { return }
+                let endTime = CFAbsoluteTimeGetCurrent() - startTime
+                print("🧪 Обработка QoS: \(qos), фильтр: \(self.selectedFilter) заняла: \(endTime) сек")
+                
+                let photos = images
+                    .compactMap { $0 }
+                    .map { Photo(image: UIImage(cgImage: $0)) }
+                
+                DispatchQueue.main.async {
+                    self.photos = photos
+                    self.photosCollection.reloadData()
+                }
+            }
     }
- 
+    
     private func setupViews() {
         let appearance = UINavigationBarAppearance()
         appearance.configureWithOpaqueBackground()
         appearance.backgroundColor = .systemBackground
-
+        
         navigationController?.navigationBar.standardAppearance = appearance
         navigationController?.navigationBar.scrollEdgeAppearance = appearance
         navigationController?.navigationBar.compactAppearance = appearance
@@ -124,20 +136,10 @@ extension PhotosViewController: UICollectionViewDelegateFlowLayout {
                         minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return paramCollection.cellSpacing
     }
-
+    
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
                         minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         return paramCollection.cellSpacing
-    }
-}
-
-extension PhotosViewController: ImageLibrarySubscriber {
-    func receive(images: [UIImage]) {
-        photos = images.map { Photo(image: $0) }
-        
-        DispatchQueue.main.async {
-            self.photosCollection.reloadData()
-        }
     }
 }
