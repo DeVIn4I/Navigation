@@ -10,6 +10,13 @@ import UIKit
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
+    var appCoordinator: AppCoordinator?
+    
+    private lazy var loginInspector = {
+        let factory = LoginFactory()
+        let inspector = factory.makeLoginInspector()
+        return inspector
+    }()
 
     func scene(
         _ scene: UIScene,
@@ -17,32 +24,12 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         options connectionOptions: UIScene.ConnectionOptions
     ) {
         guard let scene = (scene as? UIWindowScene) else { return }
-        
         let window = UIWindow(windowScene: scene)
-        let postTitle = "First post"
-        let feedVC = FeedViewController(postTitle: postTitle)
-        feedVC.tabBarItem = UITabBarItem(
-            title: "Лента",
-            image: UIImage(systemName: "list.bullet"),
-            selectedImage: nil
-        )
-        
-        let logInVC = LogInViewController()
-        logInVC.tabBarItem = UITabBarItem(
-            title: "Профиль",
-            image: UIImage(systemName: "person.crop.circle"),
-            selectedImage: nil
-        )
-
-        let tabbarController = UITabBarController()
-        tabbarController.viewControllers = [
-            feedVC,
-            logInVC
-        ].map { UINavigationController(rootViewController: $0) }
-        
-        window.rootViewController = tabbarController
-        window.makeKeyAndVisible()
         self.window = window
+        
+        let appCoordinator = AppCoordinator(window: window)
+        self.appCoordinator = appCoordinator
+        appCoordinator.start()
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {}
