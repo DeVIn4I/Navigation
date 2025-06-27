@@ -69,6 +69,18 @@ final class LogInView: UIView {
         return activityIndicator.withConstraints()
     }()
     
+    private lazy var timerLabel: UILabel = {
+        let label = UILabel()
+        label.text = "0"
+        label.font = .systemFont(ofSize: 28, weight: .medium)
+        label.textColor = .red
+        label.isHidden = true
+        return label.withConstraints()
+    }()
+    
+    private var counter: Int = 0
+    private var timer: Timer?
+    
     var logInButtonTappedCallback: ((String, String) -> Void)?
     
     override init(frame: CGRect) {
@@ -115,6 +127,7 @@ final class LogInView: UIView {
     
     @objc
     private func bruteForcePassword() {
+        startTimer()
         passwordTextField.text = nil
         activityIndicator.startAnimating()
         choosePasswordButton.isUserInteractionEnabled = false
@@ -136,6 +149,7 @@ final class LogInView: UIView {
                 self.textFieldChanged()
                 self.choosePasswordButton.isUserInteractionEnabled = true
                 self.choosePasswordButton.tintColor = .systemBlue
+                self.stopTimer()
             }
         }
     }
@@ -145,6 +159,7 @@ final class LogInView: UIView {
         addSubview(logInStackView)
         addSubview(logInButton)
         addSubview(choosePasswordButton)
+        addSubview(timerLabel)
         passwordTextField.addSubview(activityIndicator)
         emailTextField.delegate = self
         passwordTextField.delegate = self
@@ -174,13 +189,32 @@ final class LogInView: UIView {
             
             choosePasswordButton.topAnchor.constraint(equalTo: logInButton.bottomAnchor, constant: 16),
             choosePasswordButton.trailingAnchor.constraint(equalTo: logInButton.trailingAnchor),
-            choosePasswordButton.bottomAnchor.constraint(equalTo: bottomAnchor),
             choosePasswordButton.heightAnchor.constraint(equalToConstant: 30),
             choosePasswordButton.widthAnchor.constraint(equalToConstant: 150),
             
             activityIndicator.centerXAnchor.constraint(equalTo: passwordTextField.centerXAnchor),
-            activityIndicator.centerYAnchor.constraint(equalTo: passwordTextField.centerYAnchor)
+            activityIndicator.centerYAnchor.constraint(equalTo: passwordTextField.centerYAnchor),
+            
+            timerLabel.topAnchor.constraint(equalTo: choosePasswordButton.bottomAnchor, constant: 16),
+            timerLabel.centerXAnchor.constraint(equalTo: centerXAnchor),
+            timerLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
         ])
+    }
+    
+    private func startTimer() {
+        timerLabel.isHidden = false
+        timerLabel.text = "\(counter)"
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] timer in
+            guard let self else { return }
+            counter += 1
+            timerLabel.text = "\(counter)"
+        }
+    }
+    
+    private func stopTimer() {
+        timer?.invalidate()
+        timer = nil
+        counter = 0
     }
 }
 
