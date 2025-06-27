@@ -115,7 +115,10 @@ final class LogInView: UIView {
     
     @objc
     private func bruteForcePassword() {
+        passwordTextField.text = nil
         activityIndicator.startAnimating()
+        choosePasswordButton.isUserInteractionEnabled = false
+        choosePasswordButton.tintColor = .systemGray
         
         DispatchQueue.global(qos: .background).async {
             let ALLOWED_CHARACTERS:   [String] = String().printable.map { String($0) }
@@ -131,6 +134,8 @@ final class LogInView: UIView {
                 self.passwordTextField.isSecureTextEntry = false
                 self.passwordTextField.text = password
                 self.textFieldChanged()
+                self.choosePasswordButton.isUserInteractionEnabled = true
+                self.choosePasswordButton.tintColor = .systemBlue
             }
         }
     }
