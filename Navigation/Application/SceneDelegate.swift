@@ -30,6 +30,14 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let appCoordinator = AppCoordinator(window: window)
         self.appCoordinator = appCoordinator
         appCoordinator.start()
+        
+        let configArray: [AppConfiguration] = [
+            AppConfiguration.product("https://jsonplaceholder.typicode.com/users/1"),
+            AppConfiguration.debug("https://jsonplaceholder.typicode.com/posts/1"),
+            AppConfiguration.release("https://jsonplaceholder.typicode.com/albums/1")
+        ]
+        
+        NetworkService.request(for: configArray.randomElement()!)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {}
