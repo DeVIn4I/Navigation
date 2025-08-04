@@ -13,6 +13,12 @@ final class FeedViewController: UIViewController {
     private let feedModel: FeedModelProtocol
     private let checkWordView = CheckWordView()
     
+    private lazy var infoButton = CustomButton(title: "InfoVC") { [weak self] in
+        let vc = InfoViewController()
+        self?.present(vc, animated: true)
+    }
+    
+    
     weak var coordinator: FeedCoordinator?
     
     init(postTitle: String, feedModel: FeedModelProtocol) {
@@ -35,12 +41,18 @@ final class FeedViewController: UIViewController {
     private func setUpViews() {
         view.backgroundColor = .systemBackground
         view.addSubview(checkWordView)
+        view.addSubview(infoButton)
     }
     
     private func setConstraints() {
         checkWordView.snp.makeConstraints {
             $0.centerY.equalToSuperview()
             $0.leading.trailing.equalToSuperview().inset(16)
+        }
+        
+        infoButton.snp.makeConstraints {
+            $0.centerX.equalTo(view)
+            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(12)
         }
     }
     
