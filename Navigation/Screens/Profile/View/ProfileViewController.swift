@@ -105,6 +105,7 @@ extension ProfileViewController: UITableViewDataSource {
                 return UITableViewCell()
             }
             let model = viewModel.posts[indexPath.row]
+            cell.delegate = self
             cell.configure(with: model)
             cell.selectionStyle = .none
             return cell
@@ -131,5 +132,12 @@ extension ProfileViewController: UITableViewDelegate {
         if indexPath.section == 0 {
             coordinator?.showPhotos()
         }
+    }
+}
+
+extension ProfileViewController: PostTableViewCellDelegate {
+    func didDoubleTap(on post: StorageService.Post) {
+        CoreDataManager.shared.addFavoritePost(post)
+        print("✅ Success add favorite post")
     }
 }

@@ -8,7 +8,9 @@
 import UIKit
 
 protocol FeedModelProtocol {
+    var numberOfRows: Int { get }
     func check(_ password: String?) -> Bool
+    func fetchFavoritePosts() -> [FavoritePost]
 }
 
 final class FeedModel: FeedModelProtocol {
@@ -19,5 +21,15 @@ final class FeedModel: FeedModelProtocol {
             return false 
         }
         return password == secretWord
+    }
+    
+    private let coreDataManager = CoreDataManager.shared
+    
+    var numberOfRows: Int {
+        coreDataManager.fetchFavoritePosts().count
+    }
+    
+    func fetchFavoritePosts() -> [FavoritePost] {
+        coreDataManager.fetchFavoritePosts()
     }
 }

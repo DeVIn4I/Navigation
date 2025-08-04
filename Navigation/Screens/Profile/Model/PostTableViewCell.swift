@@ -8,10 +8,14 @@
 import UIKit
 import StorageService
 
+protocol PostTableViewCellDelegate: AnyObject {
+    func didDoubleTap(on post: Post)
+}
+
 final class PostTableViewCell: UITableViewCell {
     
     static let reuseID = "PostTableViewCell"
-
+    
     private lazy var authorTitleLabel: UILabel = {
         let label = UILabel()
         label.font = .systemFont(ofSize: 20, weight: .bold)
@@ -57,11 +61,15 @@ final class PostTableViewCell: UITableViewCell {
         stackView.spacing = 14
         return stackView.withConstraints()
     }()
+    
+    private var currentPost: Post?
+    weak var delegate: PostTableViewCellDelegate?
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         setupViews()
         setupConstraints()
+        setupGesture()
     }
     
     required init?(coder: NSCoder) {
@@ -96,7 +104,21 @@ final class PostTableViewCell: UITableViewCell {
         ])
     }
     
+    private func setupGesture() {
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleDoubleTap))
+        tap.numberOfTapsRequired = 2
+        contentView.addGestureRecognizer(tap)
+        contentView.isUserInteractionEnabled = true
+    }
+    
+    @objc
+    private func handleDoubleTap() {
+       guard let post = currentPost else { return }
+        delegate?.didDoubleTap(on: post)
+    }
+    
     func configure(with model: Post) {
+        currentPost = model
         authorTitleLabel.text = model.author
         postImageView.image = UIImage(named: model.image)
         descriptionPostLabel.text = model.description

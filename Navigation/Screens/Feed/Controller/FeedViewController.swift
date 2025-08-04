@@ -6,20 +6,25 @@
 //
 
 import UIKit
+import StorageService
 
 final class FeedViewController: UIViewController {
     
     private let postTitle: String
     private let feedModel: FeedModelProtocol
-    private let checkWordView = CheckWordView()
-    
-    private lazy var infoButton = CustomButton(title: "InfoVC") { [weak self] in
-        let vc = InfoViewController()
-        self?.present(vc, animated: true)
-    }
-    
-    
+   
     weak var coordinator: FeedCoordinator?
+    
+    private lazy var postsTableView: UITableView = {
+        let tableView = UITableView(frame: .zero, style: .grouped)
+        tableView.dataSource = self
+        tableView.sectionHeaderTopPadding = 0
+        tableView.register(
+            PostTableViewCell.self,
+            forCellReuseIdentifier: PostTableViewCell.identifier
+        )
+        return tableView.withConstraints()
+    }()
     
     init(postTitle: String, feedModel: FeedModelProtocol) {
         self.postTitle = postTitle
@@ -35,51 +40,45 @@ final class FeedViewController: UIViewController {
         super.viewDidLoad()
         setUpViews()
         setConstraints()
-        bind()
+        
+        print(CoreDataManager.shared.fetchFavoritePosts().count)
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        postsTableView.reloadData()
     }
     
     private func setUpViews() {
         view.backgroundColor = .systemBackground
-        view.addSubview(checkWordView)
-        view.addSubview(infoButton)
+        view.addSubview(postsTableView)
     }
     
     private func setConstraints() {
-        checkWordView.snp.makeConstraints {
-            $0.centerY.equalToSuperview()
-            $0.leading.trailing.equalToSuperview().inset(16)
-        }
-        
-        infoButton.snp.makeConstraints {
-            $0.centerX.equalTo(view)
-            $0.bottom.equalTo(view.safeAreaLayoutGuide).inset(12)
+        postsTableView.snp.makeConstraints {
+            $0.edges.equalTo(view.safeAreaLayoutGuide)
         }
     }
-    
-    private func showPost() {
-        coordinator?.showPost(title: postTitle)
+}
+
+extension FeedViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        feedModel.numberOfRows
     }
     
-    private func bind() {
-        checkWordView.onCheckTap = { [weak self] in
-            guard let self else { return }
-            let password = checkWordView.getInputText() ?? ""
-            
-            guard !password.isEmpty else {
-                let alertModel = AlertModel(title: "Ошибка", message: "Поле не должно быть пустым")
-                let alert = UIAlertController(
-                    title: alertModel.title,
-                    message: alertModel.message,
-                    preferredStyle: .alert
-                )
-                let okAction = UIAlertAction(title: "Ok", style: .default)
-                alert.addAction(okAction)
-                present(alert, animated: true)
-                return
-            }
-            
-            let isValid = feedModel.check(password)
-            checkWordView.updateTitleColor(isValid)
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: PostTableViewCell.reuseID, for: indexPath) as? PostTableViewCell else {
+            return UITableViewCell()
         }
+        let model = feedModel.fetchFavoritePosts()[indexPath.row]
+        let post = Post(
+            author: model.author ?? "",
+            description: model.desc ?? "",
+            image: model.image ?? "",
+            likes: Int(model.likes),
+            views: Int(model.views)
+        )
+        cell.configure(with: post)
+        return cell
     }
 }
