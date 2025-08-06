@@ -91,4 +91,18 @@ final class CoreDataManager {
         let results = (try? context.fetch(request)) ?? []
         return results
     }
+    
+    func fetchPostBy(author: String) -> [FavoritePost] {
+        let predicate = NSPredicate(format: "author == %@", author)
+        let fetchRequest = NSFetchRequest<FavoritePost>(entityName: "FavoritePost")
+        fetchRequest.predicate = predicate
+        
+        do {
+            let result = try context.fetch(fetchRequest)
+            return result
+        } catch {
+            print(error.localizedDescription)
+            return []
+        }
+    }
 }
