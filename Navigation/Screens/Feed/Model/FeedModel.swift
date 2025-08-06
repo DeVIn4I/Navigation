@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import CoreData
 
 protocol FeedModelProtocol {
     var numberOfRows: Int { get }
     func check(_ password: String?) -> Bool
     func fetchFavoritePosts() -> [FavoritePost]
+    func deleteFavoritePost(objectID: NSManagedObjectID) async
 }
 
 final class FeedModel: FeedModelProtocol {
@@ -31,5 +33,9 @@ final class FeedModel: FeedModelProtocol {
     
     func fetchFavoritePosts() -> [FavoritePost] {
         coreDataManager.fetchFavoritePosts()
+    }
+    
+    func deleteFavoritePost(objectID: NSManagedObjectID) async {
+        await coreDataManager.deleteFavoritePost(objectID: objectID)
     }
 }

@@ -74,6 +74,18 @@ final class CoreDataManager {
         }
     }
     
+    func deleteFavoritePost(objectID: NSManagedObjectID) async {
+        do {
+            try await backgroundContext.perform {
+                let object = self.backgroundContext.object(with: objectID)
+                self.backgroundContext.delete(object)
+                try self.backgroundContext.save()
+            }
+        } catch {
+            print(error)
+        }
+    }
+    
     func fetchFavoritePosts() -> [FavoritePost] {
         let request = FavoritePost.fetchRequest()
         let results = (try? context.fetch(request)) ?? []

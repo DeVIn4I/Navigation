@@ -18,6 +18,7 @@ final class FeedViewController: UIViewController {
     private lazy var postsTableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.dataSource = self
+        tableView.delegate = self
         tableView.sectionHeaderTopPadding = 0
         tableView.register(
             PostTableViewCell.self,
@@ -40,8 +41,6 @@ final class FeedViewController: UIViewController {
         super.viewDidLoad()
         setUpViews()
         setConstraints()
-        
-        print(CoreDataManager.shared.fetchFavoritePosts().count)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -80,5 +79,30 @@ extension FeedViewController: UITableViewDataSource {
         )
         cell.configure(with: post)
         return cell
+    }
+}
+
+extension FeedViewController: UITableViewDelegate {
+    func tableView(
+        _ tableView: UITableView,
+        trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath
+    ) -> UISwipeActionsConfiguration? {
+        let deleteAction = UIContextualAction(style: .destructive, title: "Удалить") { [weak self] (_, _, completion) in
+            guard let self else { return }
+            
+            let postToDelete = feedModel.fetchFavoritePosts()[indexPath.row]
+            
+            Task {
+                do {
+                    await self.feedModel.deleteFavoritePost(objectID: postToDelete.objectID)
+                    
+                    DispatchQueue.main.async {
+                        self.postsTableView.reloadData()
+                        completion(true)
+                    }
+                }
+            }
+        }
+        return UISwipeActionsConfiguration(actions: [deleteAction])
     }
 }
