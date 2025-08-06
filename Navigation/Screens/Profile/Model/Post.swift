@@ -8,6 +8,7 @@
 import UIKit
 
 public struct Post {
+    public var id: UUID
     public var author: String
     public var description: String
     public var image: String
@@ -15,12 +16,14 @@ public struct Post {
     public var views: Int
     
     public init(
+        id: UUID = UUID(),
         author: String,
         description: String,
         image: String,
         likes: Int,
         views: Int
     ) {
+        self.id = id
         self.author = author
         self.description = description
         self.image = image
