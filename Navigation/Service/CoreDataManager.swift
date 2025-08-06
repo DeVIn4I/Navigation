@@ -31,36 +31,46 @@ final class CoreDataManager {
         return container
     }()
     
-    var context: NSManagedObjectContext {
+    lazy var context: NSManagedObjectContext = {
         return persistentContainer.viewContext
-    }
+    }()
     
-    private func isPostAlreadyFavorite(id: UUID) -> Bool {
+    lazy var backgroundContext: NSManagedObjectContext = {
+        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        context.persistentStoreCoordinator = persistentContainer.persistentStoreCoordinator
+        return context
+    }()
+    
+    private func isPostAlreadyFavorite(id: String) -> Bool {
         let request: NSFetchRequest<FavoritePost> = FavoritePost.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %@", id.uuidString)
+        request.predicate = NSPredicate(format: "id == %@", id)
         return (try? context.fetch(request).count) ?? 0 > 0
     }
     
-    func addFavoritePost(_ post: Post) -> AddFavofiteResult {
+    func addFavoritePost(_ post: Post) async throws -> AddFavofiteResult {
         
-        if isPostAlreadyFavorite(id: post.id) {
-            return .alreadyExist
-        }
-        
-        let favoritePost = FavoritePost(context: context)
-        favoritePost.id = post.id
-        favoritePost.author = post.author
-        favoritePost.desc = post.description
-        favoritePost.image = post.image
-        favoritePost.likes = Int32(post.likes)
-        favoritePost.views = Int32(post.views)
-        
-        do {
-            try context.save()
-            return .success
-        } catch {
-            print("Error saving context: \(error)")
-            return .failure(error)
+        return try await withCheckedThrowingContinuation { continuation in
+            backgroundContext.perform {
+                if self.isPostAlreadyFavorite(id: post.id) {
+                    return continuation.resume(returning: .alreadyExist)
+                }
+                
+                let favoritePost = FavoritePost(context: self.backgroundContext)
+                favoritePost.id = post.id
+                favoritePost.author = post.author
+                favoritePost.desc = post.description
+                favoritePost.image = post.image
+                favoritePost.likes = Int32(post.likes)
+                favoritePost.views = Int32(post.views)
+                
+                do {
+                    try self.backgroundContext.save()
+                    continuation.resume(returning: .success)
+                } catch {
+                    print("Error saving context: \(error)")
+                    return continuation.resume(throwing: error)
+                }
+            }
         }
     }
     
