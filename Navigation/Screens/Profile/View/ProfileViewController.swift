@@ -74,6 +74,16 @@ final class ProfileViewController: UIViewController {
             postsTableView.bottomAnchor.constraint(equalTo: safeAreaGuide.bottomAnchor),
         ])
     }
+    
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(
+            title: title,
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "ОК", style: .cancel))
+        present(alert, animated: true)
+    }
 }
 
 extension ProfileViewController: UITableViewDataSource {
@@ -105,6 +115,7 @@ extension ProfileViewController: UITableViewDataSource {
                 return UITableViewCell()
             }
             let model = viewModel.posts[indexPath.row]
+            cell.delegate = self
             cell.configure(with: model)
             cell.selectionStyle = .none
             return cell
@@ -130,6 +141,20 @@ extension ProfileViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 0 {
             coordinator?.showPhotos()
+        }
+    }
+}
+
+extension ProfileViewController: PostTableViewCellDelegate {
+    func didDoubleTap(on post: StorageService.Post) {
+        let result = CoreDataManager.shared.addFavoritePost(post)
+        switch result {
+        case .success:
+            showAlert(title: "Успех!", message: "Пост добавлен в избранное.")
+        case .alreadyExist:
+            showAlert(title: "Внимание!", message: "Пост уже добавлен в избранное.")
+        case .failure(let error):
+            showAlert(title: "Ошибка!", message: error.localizedDescription)
         }
     }
 }

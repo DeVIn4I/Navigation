@@ -8,12 +8,29 @@
 import UIKit
 
 public struct Post {
+    public var id: UUID
     public var author: String
     public var description: String
     public var image: String
     public var likes: Int
     public var views: Int
     
+    public init(
+        id: UUID = UUID(),
+        author: String,
+        description: String,
+        image: String,
+        likes: Int,
+        views: Int
+    ) {
+        self.id = id
+        self.author = author
+        self.description = description
+        self.image = image
+        self.likes = likes
+        self.views = views
+    }
+        
     public static func makePosts() -> [Post] {
         [
             .init(

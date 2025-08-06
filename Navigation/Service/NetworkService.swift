@@ -34,28 +34,6 @@ struct NetworkService {
                 print(error?.localizedDescription ?? "")
                 return
             }
-            
-            guard let response = response as? HTTPURLResponse else {
-                print("Not HTTPURLResponse")
-                return
-            }
-            
-            print("⚠️ Response code: \(response.statusCode)")
-            print("⚠️ Response headers: \(response.allHeaderFields)")
-            
-            guard let data else {
-                print("No data")
-                return
-            }
-            
-            do {
-                let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
-                print("✅ Success data: \n\(json ?? [:])")
-            } catch {
-                print(error.localizedDescription)
-            }
-            
-            
         }.resume()
     }
 }
