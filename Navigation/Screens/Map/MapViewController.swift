@@ -52,7 +52,7 @@ final class MapViewController: UIViewController {
     
     private lazy var routeButton: UIButton = {
         let btn = UIButton(type: .system)
-        btn.addTarget(self, action: #selector(didTapPlusButton), for: .touchUpInside)
+        btn.addTarget(self, action: #selector(showAndHideSlideView), for: .touchUpInside)
         btn.translatesAutoresizingMaskIntoConstraints = false
         let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .semibold)
         btn.setImage(
@@ -116,7 +116,7 @@ final class MapViewController: UIViewController {
         locationManager.requestWhenInUseAuthorization()
         
         slidingView.closeBlock = { [weak self] in
-            self?.didTapPlusButton()
+            self?.showAndHideSlideView()
         }
         
         slidingView.routeBlock = { [weak self] transport in
@@ -177,7 +177,7 @@ final class MapViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
-    @objc private func didTapPlusButton() {
+    @objc private func showAndHideSlideView() {
         let isViewRaised = slidingViewBottomConstraint?.constant == -160
         
         if isViewRaised {
@@ -206,37 +206,13 @@ final class MapViewController: UIViewController {
             }
         }
     }
-    
-//    @objc
-//    private func centerMyPosition() {
-//        
-//        let status = locationManager.authorizationStatus
-//        
-//        guard status == .authorizedWhenInUse, status == .authorizedAlways else {
-//            showLocationServicesAlert()
-//            return
-//        }
-//        
-//        guard let location = locationManager.location else {
-//            locationManager.requestLocation()
-//            return
-//        }
-//        
-//        let region = MKCoordinateRegion(
-//            center: location.coordinate,
-//            latitudinalMeters: 1000,
-//            longitudinalMeters: 1000
-//        )
-//        mapView.setRegion(region, animated: true)
-//    }
-    
+
     @objc
     private func centerMyPosition() {
         let status = locationManager.authorizationStatus
 
         switch status {
         case .notDetermined:
-            // только запросим доступ и выйдем — без алерта
             locationManager.requestWhenInUseAuthorization()
             return
 
@@ -251,15 +227,15 @@ final class MapViewController: UIViewController {
             return
         }
 
-        // Если координаты уже есть — центрируемся, иначе спокойно запрашиваем одноразово
         if let location = locationManager.location {
-            let region = MKCoordinateRegion(center: location.coordinate,
-                                            latitudinalMeters: 1000,
-                                            longitudinalMeters: 1000)
+            let region = MKCoordinateRegion(
+                center: location.coordinate,
+                latitudinalMeters: 1000,
+                longitudinalMeters: 1000
+            )
             mapView.setRegion(region, animated: true)
         } else {
-            locationManager.requestLocation()   // результат придёт в didUpdateLocations
-            // НИКАКИХ алертов здесь — просто ждём колбэк
+            locationManager.requestLocation()
         }
     }
     

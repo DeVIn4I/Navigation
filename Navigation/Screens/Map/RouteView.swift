@@ -113,17 +113,9 @@ final class RouteView: UIView {
             $0.height.equalTo(46)
         }
         
-        walkButton.snp.makeConstraints {
-            $0.height.width.equalTo(46)
-        }
-        
-        carButton.snp.makeConstraints {
-            $0.height.width.equalTo(46)
-        }
-        
-        busButton.snp.makeConstraints {
-            $0.height.width.equalTo(46)
-        }
+        walkButton.snp.makeConstraints { $0.height.width.equalTo(46) }
+        carButton.snp.makeConstraints { $0.height.width.equalTo(46) }
+        busButton.snp.makeConstraints { $0.height.width.equalTo(46) }
     }
 
     @objc
@@ -131,15 +123,12 @@ final class RouteView: UIView {
         switch sender {
         case walkButton:
             configUIButton(sender)
-            
             transport = .walking
         case carButton:
             configUIButton(sender)
-            
             transport = .automobile
         case busButton:
             configUIButton(sender)
-            
             transport = .transit
         default:
             break
