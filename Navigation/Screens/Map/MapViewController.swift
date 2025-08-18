@@ -207,27 +207,60 @@ final class MapViewController: UIViewController {
         }
     }
     
+//    @objc
+//    private func centerMyPosition() {
+//        
+//        let status = locationManager.authorizationStatus
+//        
+//        guard status == .authorizedWhenInUse, status == .authorizedAlways else {
+//            showLocationServicesAlert()
+//            return
+//        }
+//        
+//        guard let location = locationManager.location else {
+//            locationManager.requestLocation()
+//            return
+//        }
+//        
+//        let region = MKCoordinateRegion(
+//            center: location.coordinate,
+//            latitudinalMeters: 1000,
+//            longitudinalMeters: 1000
+//        )
+//        mapView.setRegion(region, animated: true)
+//    }
+    
     @objc
     private func centerMyPosition() {
-        
         let status = locationManager.authorizationStatus
-        
-        guard status == .authorizedWhenInUse, status == .authorizedAlways else {
+
+        switch status {
+        case .notDetermined:
+            // только запросим доступ и выйдем — без алерта
+            locationManager.requestWhenInUseAuthorization()
+            return
+
+        case .denied, .restricted:
             showLocationServicesAlert()
             return
-        }
-        
-        guard let location = locationManager.location else {
-            locationManager.requestLocation()
+
+        case .authorizedAlways, .authorizedWhenInUse:
+            break
+
+        @unknown default:
             return
         }
-        
-        let region = MKCoordinateRegion(
-            center: location.coordinate,
-            latitudinalMeters: 1000,
-            longitudinalMeters: 1000
-        )
-        mapView.setRegion(region, animated: true)
+
+        // Если координаты уже есть — центрируемся, иначе спокойно запрашиваем одноразово
+        if let location = locationManager.location {
+            let region = MKCoordinateRegion(center: location.coordinate,
+                                            latitudinalMeters: 1000,
+                                            longitudinalMeters: 1000)
+            mapView.setRegion(region, animated: true)
+        } else {
+            locationManager.requestLocation()   // результат придёт в didUpdateLocations
+            // НИКАКИХ алертов здесь — просто ждём колбэк
+        }
     }
     
     @objc
@@ -317,18 +350,21 @@ final class MapViewController: UIViewController {
 extension MapViewController: CLLocationManagerDelegate {
     
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        guard CLLocationManager.locationServicesEnabled() else {
+            showLocationServicesAlert()
+            return
+        }
+
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
-            if CLLocationManager.locationServicesEnabled() {
-                manager.requestLocation()
-            } else {
-                showLocationServicesAlert()
-            }
+            manager.requestLocation()
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
-        default:
+        case .denied, .restricted:
             manager.stopUpdatingLocation()
             showLocationServicesAlert()
+        @unknown default:
+            break
         }
     }
     
