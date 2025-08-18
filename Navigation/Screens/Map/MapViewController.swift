@@ -79,7 +79,7 @@ final class MapViewController: UIViewController {
         btn.isHidden = true
         return btn
     }()
-
+    
     private lazy var slidingView: RouteView = {
         $0.layer.cornerRadius = 46
         $0.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
@@ -87,7 +87,7 @@ final class MapViewController: UIViewController {
         $0.isHidden = true
         return $0
     }(RouteView())
-
+    
     private var slidingViewBottomConstraint: NSLayoutConstraint?
     
     weak var coordinator: MapCoordinator?
@@ -105,7 +105,7 @@ final class MapViewController: UIViewController {
          choiceStyleMapButton, routeButton,
          clearPinsButton, slidingView
         ].forEach { view.addSubview($0) }
-       
+        
         mapView.delegate = self
         mapView.showsUserLocation = true
         mapView.setUserTrackingMode(.follow, animated: true)
@@ -114,7 +114,6 @@ final class MapViewController: UIViewController {
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestWhenInUseAuthorization()
-        locationManager.startUpdatingLocation()
         
         slidingView.closeBlock = { [weak self] in
             self?.didTapPlusButton()
@@ -162,9 +161,25 @@ final class MapViewController: UIViewController {
         NSLayoutConstraint.activate([bottomConstraint])
     }
     
+    private func showLocationServicesAlert() {
+        let alert = UIAlertController(
+            title: "Геолокация выключена",
+            message: "Чтобы приложение работало корректно, включите геолокацию в настройках устройства.",
+            preferredStyle: .alert
+        )
+        
+        alert.addAction(UIAlertAction(title: "Отмена", style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: "Открыть настройки", style: .default, handler: { _ in
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+    
     @objc private func didTapPlusButton() {
         let isViewRaised = slidingViewBottomConstraint?.constant == -160
-
+        
         if isViewRaised {
             slidingViewBottomConstraint?.constant = 0
             UIView.animate(withDuration: 0.35, animations: {
@@ -194,6 +209,14 @@ final class MapViewController: UIViewController {
     
     @objc
     private func centerMyPosition() {
+        
+        let status = locationManager.authorizationStatus
+        
+        guard status == .authorizedWhenInUse, status == .authorizedAlways else {
+            showLocationServicesAlert()
+            return
+        }
+        
         guard let location = locationManager.location else {
             locationManager.requestLocation()
             return
@@ -240,7 +263,7 @@ final class MapViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "Отмена", style: .cancel))
         present(alert, animated: true)
     }
-
+    
     @objc
     private func showRoute(with transport: MKDirectionsTransportType) {
         guard let start = mapView.userLocation.location?.coordinate ?? locationManager.location?.coordinate,
@@ -296,12 +319,33 @@ extension MapViewController: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .authorizedAlways, .authorizedWhenInUse:
-            manager.startUpdatingLocation()
+            if CLLocationManager.locationServicesEnabled() {
+                manager.requestLocation()
+            } else {
+                showLocationServicesAlert()
+            }
         case .notDetermined:
-            break
+            manager.requestWhenInUseAuthorization()
         default:
             manager.stopUpdatingLocation()
+            showLocationServicesAlert()
         }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let location = locations.last else { return }
+        
+        let region = MKCoordinateRegion(
+            center: location.coordinate,
+            latitudinalMeters: 1000,
+            longitudinalMeters: 1000
+        )
+        mapView.setRegion(region, animated: true)
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print("Location error:", error.localizedDescription)
+        
     }
 }
 
