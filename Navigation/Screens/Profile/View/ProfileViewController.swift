@@ -147,14 +147,19 @@ extension ProfileViewController: UITableViewDelegate {
 
 extension ProfileViewController: PostTableViewCellDelegate {
     func didDoubleTap(on post: StorageService.Post) {
-        let result = CoreDataManager.shared.addFavoritePost(post)
-        switch result {
-        case .success:
-            showAlert(title: "Успех!", message: "Пост добавлен в избранное.")
-        case .alreadyExist:
-            showAlert(title: "Внимание!", message: "Пост уже добавлен в избранное.")
-        case .failure(let error):
-            showAlert(title: "Ошибка!", message: error.localizedDescription)
+        
+        Task {
+            do {
+                let result = try await CoreDataManager.shared.addFavoritePost(post)
+                switch result {
+                case .success:
+                    showAlert(title: "Успех!", message: "Пост добавлен в избранное.")
+                case .alreadyExist:
+                    showAlert(title: "Внимание!", message: "Пост уже добавлен в избранное.")
+                case .failure(let error):
+                    showAlert(title: "Ошибка!", message: error.localizedDescription)
+                }
+            }
         }
     }
 }

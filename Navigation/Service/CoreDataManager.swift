@@ -31,36 +31,58 @@ final class CoreDataManager {
         return container
     }()
     
-    var context: NSManagedObjectContext {
+    lazy var context: NSManagedObjectContext = {
         return persistentContainer.viewContext
-    }
+    }()
     
-    private func isPostAlreadyFavorite(id: UUID) -> Bool {
+    lazy var backgroundContext: NSManagedObjectContext = {
+        let context = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        context.persistentStoreCoordinator = persistentContainer.persistentStoreCoordinator
+        return context
+    }()
+    
+    private func isPostAlreadyFavorite(id: String) -> Bool {
         let request: NSFetchRequest<FavoritePost> = FavoritePost.fetchRequest()
-        request.predicate = NSPredicate(format: "id == %@", id.uuidString)
+        request.predicate = NSPredicate(format: "id == %@", id)
         return (try? context.fetch(request).count) ?? 0 > 0
     }
     
-    func addFavoritePost(_ post: Post) -> AddFavofiteResult {
+    func addFavoritePost(_ post: Post) async throws -> AddFavofiteResult {
         
-        if isPostAlreadyFavorite(id: post.id) {
-            return .alreadyExist
+        return try await withCheckedThrowingContinuation { continuation in
+            backgroundContext.perform {
+                if self.isPostAlreadyFavorite(id: post.id) {
+                    return continuation.resume(returning: .alreadyExist)
+                }
+                
+                let favoritePost = FavoritePost(context: self.backgroundContext)
+                favoritePost.id = post.id
+                favoritePost.author = post.author
+                favoritePost.desc = post.description
+                favoritePost.image = post.image
+                favoritePost.likes = Int32(post.likes)
+                favoritePost.views = Int32(post.views)
+                
+                do {
+                    try self.backgroundContext.save()
+                    continuation.resume(returning: .success)
+                } catch {
+                    print("Error saving context: \(error)")
+                    return continuation.resume(throwing: error)
+                }
+            }
         }
-        
-        let favoritePost = FavoritePost(context: context)
-        favoritePost.id = post.id
-        favoritePost.author = post.author
-        favoritePost.desc = post.description
-        favoritePost.image = post.image
-        favoritePost.likes = Int32(post.likes)
-        favoritePost.views = Int32(post.views)
-        
+    }
+    
+    func deleteFavoritePost(objectID: NSManagedObjectID) async {
         do {
-            try context.save()
-            return .success
+            try await backgroundContext.perform {
+                let object = self.backgroundContext.object(with: objectID)
+                self.backgroundContext.delete(object)
+                try self.backgroundContext.save()
+            }
         } catch {
-            print("Error saving context: \(error)")
-            return .failure(error)
+            print(error)
         }
     }
     
@@ -68,5 +90,19 @@ final class CoreDataManager {
         let request = FavoritePost.fetchRequest()
         let results = (try? context.fetch(request)) ?? []
         return results
+    }
+    
+    func fetchPostBy(author: String) -> [FavoritePost] {
+        let predicate = NSPredicate(format: "author == %@", author)
+        let fetchRequest = NSFetchRequest<FavoritePost>(entityName: "FavoritePost")
+        fetchRequest.predicate = predicate
+        
+        do {
+            let result = try context.fetch(fetchRequest)
+            return result
+        } catch {
+            print(error.localizedDescription)
+            return []
+        }
     }
 }
