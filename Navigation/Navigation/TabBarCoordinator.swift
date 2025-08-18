@@ -30,10 +30,14 @@ final class TabBarCoordinator: Coordinator {
             userService: userService
         )
         
-        childCoordinators = [feedCoordinator, profileCoordinator]
+        let mapNav = UINavigationController()
+        let mapCoordinator = MapCoordinator(navigationController: mapNav)
+        
+        childCoordinators = [feedCoordinator, mapCoordinator, profileCoordinator]
         feedCoordinator.start()
+        mapCoordinator.start()
         profileCoordinator.start()
         
-        tabBarController.viewControllers = [feedNav, profileNav]
+        tabBarController.viewControllers = [feedNav, mapNav, profileNav]
     }
 }
