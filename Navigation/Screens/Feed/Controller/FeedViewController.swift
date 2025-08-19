@@ -110,7 +110,6 @@ extension FeedViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: PostTableViewCell.reuseID, for: indexPath) as? PostTableViewCell else {
             return UITableViewCell()
         }
-//        let model = feedModel.fetchFavoritePosts()[indexPath.row]
         
         let model = isFiltering
             ? feedModel.filteredPosts[indexPath.row]
